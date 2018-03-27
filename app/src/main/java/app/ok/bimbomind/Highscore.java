@@ -80,7 +80,7 @@ public class Highscore extends Activity {
 
     private void reset_highscore() {
     }
-
+//s
     private void setTable() {
         ViewTreeObserver vto = table_name.getViewTreeObserver();
         vto.addOnGlobalLayoutListener (new ViewTreeObserver.OnGlobalLayoutListener() {
