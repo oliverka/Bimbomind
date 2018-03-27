@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/game_field_layout">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".5"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="12">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/game_field_field"
+            android:orientation="vertical" />
+    </ScrollView>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".5"/>
+
+    <TextView
+        android:text="@string/code"
+        android:layout_marginLeft="@dimen/marginLeft"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".5"/>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".2"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginLeft="@dimen/marginLeft"
+        android:layout_margin="@dimen/marginRight"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/game_field_code"
+        android:layout_weight="1.5" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".5" />
+
+    <TextView
+        android:text="@string/color_picker"
+        android:layout_marginLeft="@dimen/marginLeft"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".5"/>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".2"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginLeft="@dimen/marginLeft"
+        android:layout_margin="@dimen/marginRight"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/game_field_color_picker"
+        android:layout_weight="1.5"></LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".5"  />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="6" />
+
+        <Button
+            android:text="@string/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/game_field_back"
+            android:layout_gravity="bottom"
+            android:layout_weight="1" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5" />
+    </LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".5"/>
+</LinearLayout>
