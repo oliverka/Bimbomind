@@ -3,6 +3,7 @@ package app.ok.bimbomind;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -56,5 +57,6 @@ public class MainMenu extends AppCompatActivity {
                 finish();
             }
         });
+        new Database(this, null, null, 0);
     }
 }

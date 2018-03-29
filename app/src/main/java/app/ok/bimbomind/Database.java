@@ -16,36 +16,75 @@ public class Database extends SQLiteOpenHelper {
     static final String DATABASE_NAME_FRONT = "bimbomind_front.db";
     private static final String TABLE_SCORE = "score";
     private static final String TABLE_PINS = "pins";
+    private static final String TABLE_TURNS = "turns";
 
-    private static final String COLUMN_ID = "id";
-    private static final String COLUMN_SCORE = "score";
-    private static final String COLUMN_USEDTURNS = "usedturns";
-    private static final String COLUMN_COLORCOUNT = "colorcount";
-    private static final String COLUMN_NAME = "name";
-    private static final String COLUMN_DATE = "datum";
+    private static final String SCORE_COLUMN_ID = "id";
+    private static final String SCORE_COLUMN_SCORE = "score";
+    private static final String SCORE_COLUMN_USEDTURNS = "usedturns";
+    private static final String SCORE_COLUMN_COLORCOUNT = "colorcount";
+    private static final String SCORE_COLUMN_NAME = "name";
+    private static final String SCORE_COLUMN_DATE = "datum";
+
+    private static final String PINS_COLUMN_R = "PINS_COLUMN_R";
+    private static final String PINS_COLUMN_G = "PINS_COLUMN_G";
+    private static final String PINS_COLUMN_B = "PINS_COLUMN_B";
+    private static final String PINS_COLUMN_SHAPE = "PINS_COLUMN_SHAPE";
+
+    public static final String PREFERENCE_SAVEGAME_COLORCOUNT = "PREFERENCE_SAVEGAME_COLORCOUNT";
+    public static final String PREFERENCE_SAVEGAME_MAXTURNS = "PREFERENCE_SAVEGAME_MAXTURNS";
+    public static final String PREFERENCE_SAVEGAME_USEDTURNS = "PREFERENCE_SAVEGAME_MAXTURNS";
+    public static final String PREFERENCE_SAVEGAME_HOLES = "PREFERENCE_SAVEGAME_HOLES";
+    public static final String PREFERENCE_SAVEGAME_ALLOWEMPTY = "PREFERENCE_SAVEGAME_ALLOWEMPTY";
+    public static final String PREFERENCE_SAVEGAME_ALLOWMULTIPLE = "PREFERENCE_SAVEGAME_ALLOWMULTIPLE";
+
+    public static final String PREFERENCE_SETTINGS_BACKGROUND_USEIMAGE = "PREFERENCE_SETTINGS_BACKGROUND_USEIMAGE";
+    public static final String PREFERENCE_SETTINGS_BACKGROUND_COLOR = "PREFERENCE_SETTINGS_BACKGROUND_COLOR";
+    public static final String PREFERENCE_SETTINGS_BACKGROUND_IMAGEPATH = "PREFERENCE_SETTINGS_BACKGROUND_IMAGEPATH";
+    public static final String PREFERENCE_SETTINGS_BACKGROUND_PINSHAPE = "PREFERENCE_SETTINGS_BACKGROUND_PINSHAPE";
+
+    public enum SHAPE {SQUARE, TRIANGLE, CIRCLE, HEXAGON, EVILHEXAGON}
+
+    private static final int[][] DEFAULT_COLORS = {{0, 0, 0}, {0, 0, 255}, {0, 255, 0}, {0, 255, 255}, {255, 0, 0}, {255, 0, 255}, {255, 255, 0}, {255, 255, 255}};
+
+    private StoredPreferences sp;
 
 
     public Database(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
+        sp = new StoredPreferences(context);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_HIGHSCORE_TABLE = " CREATE TABLE " + TABLE_SCORE + " (" +COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_SCORE + " INT, "  + COLUMN_USEDTURNS + " INT, " + COLUMN_COLORCOUNT + " INT," + COLUMN_NAME +
-                " TEXT, " + COLUMN_DATE + " TEXT " + ")";
-        System.err.println(CREATE_HIGHSCORE_TABLE);
+        String CREATE_HIGHSCORE_TABLE = " CREATE TABLE " + TABLE_SCORE + " (" +SCORE_COLUMN_ID + " INTEGER PRIMARY KEY, " + SCORE_COLUMN_SCORE + " INT, "  + SCORE_COLUMN_USEDTURNS + " INT, " + SCORE_COLUMN_COLORCOUNT + " INT," + SCORE_COLUMN_NAME +
+                " TEXT, " + SCORE_COLUMN_DATE + " TEXT " + ")";
         db.execSQL(CREATE_HIGHSCORE_TABLE);
-        //TODO: Shared preferences for saving settings, game settings
-        //String CREATE_PIN_TABLE = "CREATE TABLE " + TABLE_PINS + "(r INT, g INT, b INT)";
-        //TODO: Table for saved Game
+        String CREATE_PINS_TABLE = " CREATE TABLE " + TABLE_PINS + " (" +SCORE_COLUMN_ID + " INTEGER PRIMARY KEY, " + PINS_COLUMN_R + " INT, " + PINS_COLUMN_G + " INT, " + PINS_COLUMN_B + " INT)";
+        db.execSQL(CREATE_PINS_TABLE);
+        String QUERY_INIT = "SELECT count(*) FROM " + TABLE_PINS;
+        Cursor cursor = db.rawQuery(QUERY_INIT, null);
+        cursor.moveToFirst();
+        if(cursor.getInt(0) == 0){
+            ContentValues values = new ContentValues();
+            values.put(PINS_COLUMN_R, 0);
+            values.put(PINS_COLUMN_R, 0);
+            values.put(PINS_COLUMN_R, 0);
+        }
 
+        //0, 0, 0
+        //0, 0, 255
+        //0, 255, 0
+        //255, 0, 0
+        //255, 0, 255
+        //255, 255, 0
+        //0, 255, 255
+        //255, 255, 255
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SCORE);
         onCreate(db);
-
     }
 
     protected void addScore (Entry_Highscore eintrag) {
@@ -62,11 +101,11 @@ public class Database extends SQLiteOpenHelper {
         }
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_SCORE, eintrag.getScore());
-        values.put(COLUMN_USEDTURNS, eintrag.getUsedturns());
-        values.put(COLUMN_COLORCOUNT, eintrag.getColorcount());
-        values.put(COLUMN_NAME, eintrag.getName());
-        values.put(COLUMN_DATE, eintrag.getDatum());
+        values.put(SCORE_COLUMN_SCORE, eintrag.getScore());
+        values.put(SCORE_COLUMN_USEDTURNS, eintrag.getUsedturns());
+        values.put(SCORE_COLUMN_COLORCOUNT, eintrag.getColorcount());
+        values.put(SCORE_COLUMN_NAME, eintrag.getName());
+        values.put(SCORE_COLUMN_DATE, eintrag.getDatum());
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -95,7 +134,7 @@ public class Database extends SQLiteOpenHelper {
 
     protected Entry_Highscore[] getAllScores(int colorcount){
         Entry_Highscore[] eintraege;
-        String query = "SELECT * from " + TABLE_SCORE + " WHERE " + COLUMN_COLORCOUNT + "=" + colorcount + " order by " + COLUMN_SCORE + " desc";
+        String query = "SELECT * from " + TABLE_SCORE + " WHERE " + SCORE_COLUMN_COLORCOUNT + "=" + colorcount + " order by " + SCORE_COLUMN_SCORE + " desc";
 
         SQLiteDatabase db = getWritableDatabase();
 
@@ -112,7 +151,7 @@ public class Database extends SQLiteOpenHelper {
 
     protected Entry_Highscore[] getAllScores() {
         Entry_Highscore[] eintraege = new Entry_Highscore[numberOfData()];
-        String query = "SELECT * from "+ TABLE_SCORE + " order by " + COLUMN_SCORE + " desc";
+        String query = "SELECT * from "+ TABLE_SCORE + " order by " + SCORE_COLUMN_SCORE + " desc";
 
         SQLiteDatabase db = getWritableDatabase();
 
@@ -138,13 +177,6 @@ public class Database extends SQLiteOpenHelper {
         return eintraege;
     }
 
-    public void printAll(){
-        Entry_Highscore[] e = getAllScores();
-        for (int i = 0; i< e.length; i++) {
-            System.err.println(e[i].getName() + " " + e[i].getScore());
-        }
-    }
-
     protected int numberOfData() {
         String query = "Select count(*) FROM " + TABLE_SCORE;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -155,7 +187,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     protected int numberOfEntrys(int colorcount){
-        String query = "Select count(*) FROM " + TABLE_SCORE + " WHERE " + COLUMN_COLORCOUNT +"="+colorcount;
+        String query = "Select count(*) FROM " + TABLE_SCORE + " WHERE " + SCORE_COLUMN_COLORCOUNT +"="+colorcount;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
@@ -180,15 +212,23 @@ public class Database extends SQLiteOpenHelper {
     }
 
     protected void deleteEntry(int score, int usedturns, int colorcount, String name, String datum){
-        String query = "DELETE FROM " + TABLE_SCORE + " WHERE " + COLUMN_COLORCOUNT + "=" + colorcount + " AND " + COLUMN_SCORE + "=" + score + " AND " + COLUMN_DATE + "=" + datum + " AND " +
-                COLUMN_NAME + "=" + name + " AND " + COLUMN_USEDTURNS + "=" + usedturns;
+        String query = "DELETE FROM " + TABLE_SCORE + " WHERE " + SCORE_COLUMN_COLORCOUNT + "=" + colorcount + " AND " + SCORE_COLUMN_SCORE + "=" + score + " AND " + SCORE_COLUMN_DATE + "=" + datum + " AND " +
+                SCORE_COLUMN_NAME + "=" + name + " AND " + SCORE_COLUMN_USEDTURNS + "=" + usedturns;
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(query);
     }
 
     protected void resetHighscores(int colorcount){
-        String query = "DELETE FROM " + TABLE_SCORE + " WHERE " + COLUMN_COLORCOUNT + "=" + colorcount;
+        String query = "DELETE FROM " + TABLE_SCORE + " WHERE " + SCORE_COLUMN_COLORCOUNT + "=" + colorcount;
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(query);
+    }
+
+    protected int getPreference(String key){
+        return sp.getInteger(key);
+    }
+
+    protected void setPreference(String key, int value){
+        sp.storePreference(key, value);
     }
 }
