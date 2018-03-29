@@ -11,6 +11,7 @@ import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -62,15 +63,18 @@ public class Game extends Activity {
         setFieldColorPicker(field_code);
         for (int i = 0; i < field_color_picker.length; i ++) {
             final int finalI = i;
-            field_color_picker[i].setOnClickListener(new View.OnClickListener() {
+            field_color_picker[i].setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public void onClick(View v) {
+                public boolean onLongClick(View v) {
+                    Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    vibrator.vibrate(200);
                     ClipData.Item item = new ClipData.Item((Intent) v.getTag());
                     ClipData dragData = new ClipData((CharSequence) v.getTag(), new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN},item);
                     ClipData.Item data = dragData.getItemAt(0);
                     System.err.println("Data: " + item.getText() + " " + item.getHtmlText());
                     View.DragShadowBuilder myShadow = new MyDragShadowBuilder(field_color_picker[finalI]);
                     v.startDrag(dragData,myShadow, null,0);
+                    return false;
                 }
             });
             myDragEventListener mDragListen = new myDragEventListener();
@@ -125,7 +129,7 @@ public class Game extends Activity {
 
         public MyDragShadowBuilder(View v) {
             super(v);
-            shadow = new ColorDrawable(Color.LTGRAY);
+            shadow = new ColorDrawable(Color.BLUE);
         }
         @Override
         public void onProvideShadowMetrics (Point size, Point touch) {
@@ -154,7 +158,6 @@ public class Game extends Activity {
                         //v.setColorFilter(Color.BLUE);
                         v.invalidate();
                         return true;
-
                     }
                     return false;
 
