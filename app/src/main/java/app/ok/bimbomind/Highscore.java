@@ -30,10 +30,13 @@ public class Highscore extends Activity {
     private Spinner choice;
     private TextView[] names = new TextView[10];
     private TextView[] scores = new TextView[10];
+    private Database db;
+    private int pos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        pos = 5;
         setContentView(R.layout.highscore);
         context = this;
         back = (Button) findViewById(R.id.highscore_back);
@@ -66,7 +69,13 @@ public class Highscore extends Activity {
         choice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                System.err.println(position + " " + id);
+                //System.err.println(position + " " + id);
+                switch (position){
+                    case 0: position = 5; break;
+                    case 1: position = 6; break;
+                    case 2: position = 8; break;
+                }
+                pos = position;
                 setTable(position);
             }
 
@@ -75,13 +84,17 @@ public class Highscore extends Activity {
 
             }
         });
-        setTable();
+        init();
+
+        db = new Database(this, null, null, 1);
     }
 
     private void reset_highscore() {
+        //TODO: Ask for Confirmation
+        db.resetHighscores(pos);
     }
 
-    private void setTable() {
+    private void init() {
         ViewTreeObserver vto = table_name.getViewTreeObserver();
         vto.addOnGlobalLayoutListener (new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -89,11 +102,11 @@ public class Highscore extends Activity {
                 table_name.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 for (int i = 0; i < 10; i ++) {
                     names[i] = new TextView(context);
-                    names[i].setText("Schalke: " + i);
+                    names[i].setText("");
                     names[i].setHeight(table_name.getHeight()/10);
                     table_name.addView(names[i]);
                     scores[i] = new TextView(context);
-                    scores[i].setText(String.valueOf(i));
+                    scores[i].setText("");
                     scores[i].setHeight(table_name.getHeight()/10);
                     table_score.addView(scores[i]);
                 }
@@ -102,9 +115,20 @@ public class Highscore extends Activity {
     }
 
     private void setTable(int game) {
+        Entry_Highscore[] e = db.getAllScores(game);
+
         for (int i = 0; i < 10; i ++) {
-            names[i].setText("Schalke: " + game);
-            scores[i].setText(String.valueOf(i));
+            String name, score;
+            try{
+                name = e[i].getName();
+                score = e[i].getScore()+"";
+            }
+            catch(IndexOutOfBoundsException ex){
+                name = "";
+                score = "";
+            }
+            names[i].setText(name);
+            scores[i].setText(score);
         }
     }
 
