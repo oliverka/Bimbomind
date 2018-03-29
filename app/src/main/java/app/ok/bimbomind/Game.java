@@ -162,25 +162,21 @@ public class Game extends Activity {
                     return false;
 
                 case DragEvent.ACTION_DRAG_ENTERED:
-                    //v.setColorFilter(Color.GREEN);
                     v.invalidate();
                     return true;
                 case DragEvent.ACTION_DRAG_LOCATION:
                     return true;
                 case DragEvent.ACTION_DRAG_EXITED:
-                    //v.setColorFilter(Color.BLUE);
                     v.invalidate();
                     return true;
                 case DragEvent.ACTION_DROP:
                     ClipData.Item item = event.getClipData().getItemAt(0);
                     String dragData = (String) item.getText();
                     System.err.println("Dragged Data: " + dragData);
-                    //v.clearColorFilter();
                     v.invalidate();
                     return true;
 
                 case DragEvent.ACTION_DRAG_ENDED:
-                    //v.clearColorFilter();
                     v.invalidate();
                     if (event.getResult()) {
                         System.err.println(event.getLocalState() + " || " + v.getId());
