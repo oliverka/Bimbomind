@@ -15,13 +15,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NewGame"></activity>
-        <activity android:name=".Game"></activity>
-        <activity android:name=".Highscore"></activity>
-        <activity android:name=".Settings"></activity>
-        <activity android:name=".PinSettings"></activity>
-        <activity android:name=".Tutorial"></activity>
-        <activity android:name=".SettingsBackground"></activity>
+        <activity android:name=".NewGame" />
+        <activity android:name=".Game" />
+        <activity android:name=".Highscore" />
+        <activity android:name=".Settings" />
+        <activity android:name=".PinSettings" />
+        <activity android:name=".Tutorial" />
+        <activity android:name=".SettingsBackground" />
     </application>
 
 </manifest>
