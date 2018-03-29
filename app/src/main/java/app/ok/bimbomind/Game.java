@@ -11,12 +11,14 @@ import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by o.k on 15.03.2018.
@@ -60,23 +62,20 @@ public class Game extends Activity {
         setFieldColorPicker(field_code);
         for (int i = 0; i < field_color_picker.length; i ++) {
             final int finalI = i;
-            field_color_picker[i].setOnLongClickListener(new View.OnLongClickListener() {
+            field_color_picker[i].setOnClickListener(new View.OnClickListener() {
                 @Override
-                public boolean onLongClick(View v) {
+                public void onClick(View v) {
                     ClipData.Item item = new ClipData.Item((Intent) v.getTag());
                     ClipData dragData = new ClipData((CharSequence) v.getTag(), new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN},item);
+                    ClipData.Item data = dragData.getItemAt(0);
+                    System.err.println("Data: " + item.getText() + " " + item.getHtmlText());
                     View.DragShadowBuilder myShadow = new MyDragShadowBuilder(field_color_picker[finalI]);
                     v.startDrag(dragData,myShadow, null,0);
-                    return false;
                 }
             });
+            myDragEventListener mDragListen = new myDragEventListener();
+            field_code_pins[i].setOnDragListener(mDragListen);
         }
-        /*mDragListen = new myDragEventListener();
-
-        View imageView = new ImageView(this);
-
-// Sets the drag event listener for the View
-        imageView.setOnDragListener(mDragListen);*/
     }
 
     private void setFieldGame(final int field_code) {
@@ -142,16 +141,17 @@ public class Game extends Activity {
             shadow.draw(canvas);
         }
     }
-   /* protected class myDragEventListener implements View.OnDragListener {
+    protected class myDragEventListener implements View.OnDragListener {
 
         // This is the method that the system calls when it dispatches a drag event to the
         // listener.
         public boolean onDrag(View v, DragEvent event) {
             final int action = event.getAction();
+            //System.err.println(action);
             switch(action) {
                 case DragEvent.ACTION_DRAG_STARTED:
                     if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
-                        v.setColorFilter(Color.BLUE);
+                        //v.setColorFilter(Color.BLUE);
                         v.invalidate();
                         return true;
 
@@ -159,28 +159,28 @@ public class Game extends Activity {
                     return false;
 
                 case DragEvent.ACTION_DRAG_ENTERED:
-                    v.setColorFilter(Color.GREEN);
+                    //v.setColorFilter(Color.GREEN);
                     v.invalidate();
                     return true;
                 case DragEvent.ACTION_DRAG_LOCATION:
                     return true;
                 case DragEvent.ACTION_DRAG_EXITED:
-                    v.setColorFilter(Color.BLUE);
+                    //v.setColorFilter(Color.BLUE);
                     v.invalidate();
                     return true;
                 case DragEvent.ACTION_DROP:
                     ClipData.Item item = event.getClipData().getItemAt(0);
-                    dragData = item.getText();
-                    Toast.makeText(this, "Dragged data is " + dragData, Toast.LENGTH_LONG);
-                    v.clearColorFilter();
+                    String dragData = (String) item.getText();
+                    System.err.println("Dragged Data: " + dragData);
+                    //v.clearColorFilter();
                     v.invalidate();
                     return true;
 
                 case DragEvent.ACTION_DRAG_ENDED:
-                    v.clearColorFilter();
+                    //v.clearColorFilter();
                     v.invalidate();
                     if (event.getResult()) {
-                        Toast.makeText(context, "The drop was handled.", Toast.LENGTH_LONG);
+                        System.err.println(event.getLocalState() + " || " + v.getId());
 
                     } else {
                         Toast.makeText(context, "The drop didn't work.", Toast.LENGTH_LONG);
@@ -192,11 +192,11 @@ public class Game extends Activity {
 
                 // An unknown action type was received.
                 default:
-                    Log.e("DragDrop Example","Unknown action type received by OnDragListener.");
+                    //Log.e("DragDrop Example","Unknown action type received by OnDragListener.");
                     break;
             }
 
             return false;
         }
-    };*/
+    };
 }
