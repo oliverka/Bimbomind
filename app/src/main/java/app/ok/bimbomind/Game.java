@@ -2,24 +2,18 @@ package app.ok.bimbomind;
 
 import android.app.Activity;
 import android.content.ClipData;
-import android.content.ClipDescription;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Created by o.k on 15.03.2018.
@@ -27,22 +21,18 @@ import android.widget.Toast;
 
 public class Game extends Activity {
 
-    private Button back;
     private LinearLayout field_game;
     private LinearLayout color_picker;
-    private LinearLayout layout;
-    private ImageView[] field_code_pins;
+    private LinearLayout[] field_code_pins;
     private TextView[] field_color_picker;
-    private Context context;
-    private int field_code = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_field);
-        context = this;
-        back = (Button) findViewById(R.id.game_field_back);
-        layout = (LinearLayout) findViewById(R.id.game_field_layout);
+        Context context = this;
+        Button back = (Button) findViewById(R.id.game_field_back);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.game_field_layout);
         field_game = (LinearLayout) findViewById(R.id.game_field_code);
         color_picker = (LinearLayout) findViewById(R.id.game_field_color_picker);
         back.setOnClickListener(new View.OnClickListener() {
@@ -53,33 +43,19 @@ public class Game extends Activity {
                 finish();
             }
         });
+        int field_code = 5;
         field_color_picker = new TextView[field_code];
-        field_code_pins = new ImageView[field_code];
+        field_code_pins = new LinearLayout[field_code];
         for (int i = 0; i < field_color_picker.length; i ++) {
             field_color_picker[i] = new TextView(context);
-            field_code_pins[i] = new ImageView(context);
+            field_code_pins[i] = new LinearLayout(context);
+        }
+        for (int i = 0; i < field_color_picker.length; i ++) {
+            field_color_picker[i].setOnTouchListener(new MyTouchListener());
+            field_code_pins[i].setOnDragListener(new MyDragListener(i));
         }
         setFieldGame(field_code);
         setFieldColorPicker(field_code);
-        for (int i = 0; i < field_color_picker.length; i ++) {
-            final int finalI = i;
-            field_color_picker[i].setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                    vibrator.vibrate(200);
-                    ClipData.Item item = new ClipData.Item((Intent) v.getTag());
-                    ClipData dragData = new ClipData((CharSequence) v.getTag(), new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN},item);
-                    ClipData.Item data = dragData.getItemAt(0);
-                    System.err.println("Data: " + item.getText() + " " + item.getHtmlText());
-                    View.DragShadowBuilder myShadow = new MyDragShadowBuilder(field_color_picker[finalI]);
-                    v.startDrag(dragData,myShadow, null,0);
-                    return false;
-                }
-            });
-            myDragEventListener mDragListen = new myDragEventListener();
-            field_code_pins[i].setOnDragListener(mDragListen);
-        }
     }
 
     private void setFieldGame(final int field_code) {
@@ -93,7 +69,7 @@ public class Game extends Activity {
                     field_code_pins[i].setX((float) (field_width * i));
                     field_code_pins[i].setMinimumWidth((int) field_width);
                     field_code_pins[i].setMinimumHeight((int) (field_game.getHeight() * 0.66));
-                    field_code_pins[i].setImageResource(R.drawable.code_border);
+                    field_code_pins[i].setBackgroundColor(Color.GRAY);
                     field_game.addView(field_code_pins[i]);
                 }
             }
@@ -123,79 +99,55 @@ public class Game extends Activity {
         startActivity(intent);
         finish();
     }
-
-    private static class MyDragShadowBuilder extends View.DragShadowBuilder {
-        private static Drawable shadow;
-
-        public MyDragShadowBuilder(View v) {
-            super(v);
-            shadow = new ColorDrawable(Color.BLUE);
-        }
-        @Override
-        public void onProvideShadowMetrics (Point size, Point touch) {
-            int width, height;
-            width = getView().getWidth() / 2;
-            height = getView().getHeight() / 2;
-            shadow.setBounds(0, 0, width, height);
-            size.set(width, height);
-            touch.set(width / 2, height / 2);
-        }
-        @Override
-        public void onDrawShadow(Canvas canvas) {
-            shadow.draw(canvas);
+    private final class MyTouchListener implements View.OnTouchListener {
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                ClipData data = ClipData.newPlainText("", "");
+                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
+                        view);
+                view.startDrag(data, shadowBuilder, view, 0);
+                //view.setVisibility(View.INVISIBLE);
+                return true;
+            } else {
+                return false;
+            }
         }
     }
-    protected class myDragEventListener implements View.OnDragListener {
+    class MyDragListener implements View.OnDragListener {
 
-        // This is the method that the system calls when it dispatches a drag event to the
-        // listener.
+        int i = 9;
+
+        public MyDragListener(int i) {
+            this.i = i;
+        }
+
+        @Override
         public boolean onDrag(View v, DragEvent event) {
-            final int action = event.getAction();
-            //System.err.println(action);
-            switch(action) {
+            if (field_code_pins[0] == v) {
+
+            }
+            switch (event.getAction()) {
                 case DragEvent.ACTION_DRAG_STARTED:
-                    if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
-                        //v.setColorFilter(Color.BLUE);
-                        v.invalidate();
-                        return true;
-                    }
-                    return false;
-
+                    // do nothing
+                    break;
                 case DragEvent.ACTION_DRAG_ENTERED:
-                    v.invalidate();
-                    return true;
-                case DragEvent.ACTION_DRAG_LOCATION:
-                    return true;
+                    break;
                 case DragEvent.ACTION_DRAG_EXITED:
-                    v.invalidate();
-                    return true;
+                    break;
                 case DragEvent.ACTION_DROP:
-                    ClipData.Item item = event.getClipData().getItemAt(0);
-                    String dragData = (String) item.getText();
-                    System.err.println("Dragged Data: " + dragData);
-                    v.invalidate();
-                    return true;
-
+                    View view = (View) event.getLocalState();
+                    ViewGroup owner = (ViewGroup) view.getParent();
+                    owner.removeView(view);
+                    LinearLayout container = (LinearLayout) v;
+                    if (((LinearLayout) v).getChildCount() < 1)
+                        container.addView(view);
+                    view.setVisibility(View.VISIBLE);
+                    break;
                 case DragEvent.ACTION_DRAG_ENDED:
-                    v.invalidate();
-                    if (event.getResult()) {
-                        System.err.println(event.getLocalState() + " || " + v.getId());
-
-                    } else {
-                        Toast.makeText(context, "The drop didn't work.", Toast.LENGTH_LONG);
-
-                    }
-
-                    // returns true; the value is ignored.
-                    return true;
-
-                // An unknown action type was received.
                 default:
-                    //Log.e("DragDrop Example","Unknown action type received by OnDragListener.");
                     break;
             }
-
-            return false;
+            return true;
         }
-    };
+    }
 }
