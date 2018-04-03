@@ -29,6 +29,15 @@ public class Database extends SQLiteOpenHelper {
     private static final String PINS_COLUMN_G = "PINS_COLUMN_G";
     private static final String PINS_COLUMN_B = "PINS_COLUMN_B";
 
+    private static final String SAVE_PIN1 = "PIN1";
+    private static final String SAVE_PIN2 = "PIN2";
+    private static final String SAVE_PIN3 = "PIN3";
+    private static final String SAVE_PIN4 = "PIN4";
+    private static final String SAVE_PIN5 = "PIN5";
+    private static final String SAVE_PIN6 = "PIN6";
+    private static final String SAVE_PIN7 = "PIN7";
+    private static final String SAVE_PIN8 = "PIN8";
+    private static final String SAVE_ISCODE = "ISCODE";
 
     public static final String PREFERENCE_SAVEGAME_COLORCOUNT = "PREFERENCE_SAVEGAME_COLORCOUNT";
     public static final String PREFERENCE_SAVEGAME_MAXTURNS = "PREFERENCE_SAVEGAME_MAXTURNS";
@@ -38,12 +47,12 @@ public class Database extends SQLiteOpenHelper {
     public static final String PREFERENCE_SAVEGAME_ALLOWMULTIPLE = "PREFERENCE_SAVEGAME_ALLOWMULTIPLE";
 
     public static final String PREFERENCE_SETTINGS_BACKGROUND_USEIMAGE = "PREFERENCE_SETTINGS_BACKGROUND_USEIMAGE";
-    public static final String PREFERENCE_SETTINGS_BACKGROUND_COLOR = "PREFERENCE_SETTINGS_BACKGROUND_COLOR";
+    public static final String PREFERENCE_SETTINGS_BACKGROUND_COLOR_R = "PREFERENCE_SETTINGS_BACKGROUND_COLOR_R";
+    public static final String PREFERENCE_SETTINGS_BACKGROUND_COLOR_G = "PREFERENCE_SETTINGS_BACKGROUND_COLOR_G";
+    public static final String PREFERENCE_SETTINGS_BACKGROUND_COLOR_B = "PREFERENCE_SETTINGS_BACKGROUND_COLOR_B";
     public static final String PREFERENCE_SETTINGS_BACKGROUND_IMAGEPATH = "PREFERENCE_SETTINGS_BACKGROUND_IMAGEPATH";
     public static final String PREFERENCE_SETTINGS_BACKGROUND_PINSHAPE = "PREFERENCE_SETTINGS_BACKGROUND_PINSHAPE";
     public static final String PREFERENCE_PINS_SHAPE = "PREFERENCE_PINS_COLUMN_SHAPE";
-
-    public enum SHAPE {SQUARE, TRIANGLE, CIRCLE, HEXAGON, EVILHEXAGON}
 
     private static final int[][] DEFAULT_COLORS = {{0, 0, 0}, {0, 0, 255}, {0, 255, 0}, {0, 255, 255}, {255, 0, 0}, {255, 0, 255}, {255, 255, 0}, {255, 255, 255}};
 
@@ -57,11 +66,17 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_HIGHSCORE_TABLE = " CREATE TABLE " + TABLE_SCORE + " (" +SCORE_COLUMN_ID + " INTEGER PRIMARY KEY, " + SCORE_COLUMN_SCORE + " INT, "  + SCORE_COLUMN_USEDTURNS + " INT, " + SCORE_COLUMN_COLORCOUNT + " INT," + SCORE_COLUMN_NAME +
+        String CREATE_TABLE = " CREATE TABLE " + TABLE_SCORE + " (" +SCORE_COLUMN_ID + " INTEGER PRIMARY KEY, " + SCORE_COLUMN_SCORE + " INT, "  + SCORE_COLUMN_USEDTURNS + " INT, " + SCORE_COLUMN_COLORCOUNT + " INT," + SCORE_COLUMN_NAME +
                 " TEXT, " + SCORE_COLUMN_DATE + " TEXT " + ")";
-        db.execSQL(CREATE_HIGHSCORE_TABLE);
-        String CREATE_PINS_TABLE = " CREATE TABLE " + TABLE_PINS + " (" +SCORE_COLUMN_ID + " INTEGER PRIMARY KEY, " + PINS_COLUMN_R + " INT, " + PINS_COLUMN_G + " INT, " + PINS_COLUMN_B + " INT)";
-        db.execSQL(CREATE_PINS_TABLE);
+        db.execSQL(CREATE_TABLE);
+        CREATE_TABLE = " CREATE TABLE " + TABLE_PINS + " (" +SCORE_COLUMN_ID + " INTEGER PRIMARY KEY, " + PINS_COLUMN_R + " INT, " + PINS_COLUMN_G + " INT, " + PINS_COLUMN_B + " INT)";
+        db.execSQL(CREATE_TABLE);
+        CREATE_TABLE = " CREATE TABLE " + TABLE_PINS + " (" +SCORE_COLUMN_ID + " INTEGER PRIMARY KEY, "
+                + SAVE_PIN1 + " INT, " + SAVE_PIN1 + " INT, " + SAVE_PIN1 + " INT, " + SAVE_PIN1 + " INT, "
+                + SAVE_PIN1 + " INT, " + SAVE_PIN1 + " INT, " + SAVE_PIN1 + " INT, " + SAVE_PIN1 + " INT, "
+                + SAVE_ISCODE + " INT)";
+        db.execSQL(CREATE_TABLE);
+        
         Cursor c = db.rawQuery("SELECT count(*) FROM " + TABLE_PINS, null);
         c.moveToFirst();
         if (c.getInt(0) < 8) updateColorSettings(DEFAULT_COLORS, db);
@@ -112,7 +127,7 @@ public class Database extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    protected void addScore (Entry_Highscore eintrag) {
+    protected void addScore(Entry_Highscore eintrag) {
 
         if(numberOfEntrys(eintrag.getColorcount()) > 10){
             Entry_Highscore worst = getWorstScore(eintrag.getColorcount());
@@ -224,23 +239,6 @@ public class Database extends SQLiteOpenHelper {
         return i;
     }
 
-    protected void deleteHighscore() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        int length = numberOfData();
-        System.err.println(length);
-
-        String query = "SELECT * FROM " + TABLE_SCORE;
-        Cursor cursor = db.rawQuery(query,null);
-        cursor.moveToFirst();
-        System.err.println(cursor.getCount()+ " "+ cursor.getString(0));
-
-        for (int i = 0 ; i <= length ; i++) {
-            String delete = "DELETE FROM " + TABLE_SCORE + " WHERE id = " +String.valueOf(i);
-            db.execSQL(delete);
-        }
-        db.close();
-    }
-
     protected void deleteEntry(int score, int usedturns, int colorcount, String name, String datum){
         String query = "DELETE FROM " + TABLE_SCORE + " WHERE " + SCORE_COLUMN_COLORCOUNT + "=" + colorcount + " AND " + SCORE_COLUMN_SCORE + "=" + score + " AND " + SCORE_COLUMN_DATE + "=" + datum + " AND " +
                 SCORE_COLUMN_NAME + "=" + name + " AND " + SCORE_COLUMN_USEDTURNS + "=" + usedturns;
@@ -256,8 +254,8 @@ public class Database extends SQLiteOpenHelper {
         db.close();
     }
 
-    protected void resetDatabase(String name){
-        String query = "DELETE FROM " + name + " WHERE 0=0";
+    protected void resetDatabase(String dbName){
+        String query = "DELETE FROM " + dbName + " WHERE 0=0";
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(query);
         db.close();
@@ -266,6 +264,8 @@ public class Database extends SQLiteOpenHelper {
     protected int getPreference(String key){
         return sp.getInteger(key);
     }
+
+    protected String getPreferenceString(String key) {return sp.getString(key);}
 
     protected void setPreference(String key, int value){
         sp.storePreference(key, value);
