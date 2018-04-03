@@ -4,9 +4,9 @@ package app.ok.bimbomind;
  * Created by Familie on 17.06.2016.
  */
 public class Entry_Highscore {
-    int usedturns, colorcount, score;
-    String name;
-    String datum;
+    private int usedturns, colorcount, score;
+    private String name;
+    private String datum;
     public Entry_Highscore(int score, int usedturns, int colorcount, String name, String datum) {
         this.score = score;
         this.usedturns = usedturns;
