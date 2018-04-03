@@ -28,7 +28,7 @@ public class Database extends SQLiteOpenHelper {
     private static final String PINS_COLUMN_R = "PINS_COLUMN_R";
     private static final String PINS_COLUMN_G = "PINS_COLUMN_G";
     private static final String PINS_COLUMN_B = "PINS_COLUMN_B";
-    private static final String PINS_COLUMN_SHAPE = "PINS_COLUMN_SHAPE";
+
 
     public static final String PREFERENCE_SAVEGAME_COLORCOUNT = "PREFERENCE_SAVEGAME_COLORCOUNT";
     public static final String PREFERENCE_SAVEGAME_MAXTURNS = "PREFERENCE_SAVEGAME_MAXTURNS";
@@ -41,6 +41,7 @@ public class Database extends SQLiteOpenHelper {
     public static final String PREFERENCE_SETTINGS_BACKGROUND_COLOR = "PREFERENCE_SETTINGS_BACKGROUND_COLOR";
     public static final String PREFERENCE_SETTINGS_BACKGROUND_IMAGEPATH = "PREFERENCE_SETTINGS_BACKGROUND_IMAGEPATH";
     public static final String PREFERENCE_SETTINGS_BACKGROUND_PINSHAPE = "PREFERENCE_SETTINGS_BACKGROUND_PINSHAPE";
+    public static final String PREFERENCE_PINS_COLUMN_SHAPE = "PREFERENCE_PINS_COLUMN_SHAPE";
 
     public enum SHAPE {SQUARE, TRIANGLE, CIRCLE, HEXAGON, EVILHEXAGON}
 
@@ -61,24 +62,48 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL(CREATE_HIGHSCORE_TABLE);
         String CREATE_PINS_TABLE = " CREATE TABLE " + TABLE_PINS + " (" +SCORE_COLUMN_ID + " INTEGER PRIMARY KEY, " + PINS_COLUMN_R + " INT, " + PINS_COLUMN_G + " INT, " + PINS_COLUMN_B + " INT)";
         db.execSQL(CREATE_PINS_TABLE);
-        String QUERY_INIT = "SELECT count(*) FROM " + TABLE_PINS;
-        Cursor cursor = db.rawQuery(QUERY_INIT, null);
-        cursor.moveToFirst();
-        if(cursor.getInt(0) == 0){
-            ContentValues values = new ContentValues();
-            values.put(PINS_COLUMN_R, 0);
-            values.put(PINS_COLUMN_R, 0);
-            values.put(PINS_COLUMN_R, 0);
-        }
+        Cursor c = db.rawQuery("SELECT count(*) FROM " + TABLE_PINS, null);
+        c.moveToFirst();
+        if (c.getInt(0) < 8) updateColorSettings(DEFAULT_COLORS, db);
+        //db.close();
+    }
 
-        //0, 0, 0
-        //0, 0, 255
-        //0, 255, 0
-        //255, 0, 0
-        //255, 0, 255
-        //255, 255, 0
-        //0, 255, 255
-        //255, 255, 255
+    public int[][] getColorSettings(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_PINS + " ORDER BY " + SCORE_COLUMN_ID + " ASC";
+        Cursor c = db.rawQuery(query, null);
+        c.moveToFirst();
+        int[][] colors = new int[8][3];
+        for(int i =  0; i<c.getCount(); i++){
+            int r = c.getColumnIndex(PINS_COLUMN_R);
+            int g = c.getColumnIndex(PINS_COLUMN_G);
+            int b = c.getColumnIndex(PINS_COLUMN_B);
+            colors[i][0] = c.getInt(r);
+            colors[i][1] = c.getInt(g);
+            colors[i][2] = c.getInt(b);
+        }
+        db.close();
+        for(int i = 0; i< 8; i++){
+            System.err.println("Color " +i+ " " + colors[i][0]+ " " + colors[i][1]+ " " + colors[i][2]);
+
+        }
+        return colors;
+    }
+
+    public void updateColorSettings(int[][] colors) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        updateColorSettings(colors, db);
+        db.close();
+    }
+
+    public void updateColorSettings(int[][] colors, SQLiteDatabase db) {
+        for(int i = 0; i<8; i++){
+            ContentValues values = new ContentValues();
+            values.put(PINS_COLUMN_R, colors[i][0]);
+            values.put(PINS_COLUMN_G, colors[i][1]);
+            values.put(PINS_COLUMN_B, colors[i][2]);
+            db.update(TABLE_PINS, values, "id=?", new String[] {Integer.toString(i)});
+        }
     }
 
     @Override
@@ -146,6 +171,7 @@ public class Database extends SQLiteOpenHelper {
             cursor.moveToNext();
         }
         cursor.close();
+        db.close();
         return eintraege;
     }
 
@@ -173,6 +199,7 @@ public class Database extends SQLiteOpenHelper {
                 }
             }
         }
+        db.close();
         cursor.close();
         return eintraege;
     }
@@ -183,6 +210,7 @@ public class Database extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         int i=cursor.getInt(0);
+        db.close();
         return i;
     }
 
@@ -192,6 +220,7 @@ public class Database extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         int i=cursor.getInt(0);
+        db.close();
         return i;
     }
 
@@ -209,6 +238,7 @@ public class Database extends SQLiteOpenHelper {
             String delete = "DELETE FROM " + TABLE_SCORE + " WHERE id = " +String.valueOf(i);
             db.execSQL(delete);
         }
+        db.close();
     }
 
     protected void deleteEntry(int score, int usedturns, int colorcount, String name, String datum){
@@ -216,12 +246,21 @@ public class Database extends SQLiteOpenHelper {
                 SCORE_COLUMN_NAME + "=" + name + " AND " + SCORE_COLUMN_USEDTURNS + "=" + usedturns;
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(query);
+        db.close();
     }
 
     protected void resetHighscores(int colorcount){
         String query = "DELETE FROM " + TABLE_SCORE + " WHERE " + SCORE_COLUMN_COLORCOUNT + "=" + colorcount;
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(query);
+        db.close();
+    }
+
+    protected void resetDatabase(String name){
+        String query = "DELETE FROM " + name + " WHERE 0=0";
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(query);
+        db.close();
     }
 
     protected int getPreference(String key){
