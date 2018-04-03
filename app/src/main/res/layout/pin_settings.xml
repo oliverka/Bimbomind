@@ -30,43 +30,43 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
         <Button
-            android:text="Dreieck"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:id="@+id/pin_settings_dreieck"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:background="@drawable/triangle"/>
         <Space
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
         <Button
-            android:text="Kreis"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:id="@+id/pin_settings_kreis"
+            android:background="@drawable/circle"
             android:layout_weight="1" />
         <Space
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
         <Button
-            android:text="Fünfeck"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/pin_settings_fuenfeck"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/pin_settings_rhombus"
+            android:background="@drawable/rhombus"
             android:layout_weight="1" />
         <Space
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
         <Button
-            android:text="Quadrat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:background="@color/red"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:id="@+id/pin_settings_quadrat"
             android:layout_weight="1" />
         <Space
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
     </LinearLayout>
@@ -88,6 +88,18 @@
         android:layout_height="0dp"
         android:layout_weight=".5"/>
 
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/marginLeft"
+        android:layout_marginRight="@dimen/marginRight"
+        android:layout_height="wrap_content"
+        android:id="@+id/pin_settings_pins" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".2"/>
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -105,19 +117,36 @@
             android:layout_weight="30"
             android:layout_marginLeft="@dimen/marginLeft"
             android:layout_marginRight="@dimen/marginRight"
-            android:id="@+id/pin_settings_color_picker" />
+            android:id="@+id/pin_settings_color_picker_red" />
 
         <Space
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight=".5" />
+    </LinearLayout>
 
-        <Button
-            android:text=""
-            android:layout_width="wrap_content"
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <Space
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/pin_settings_slider_color"
-            android:layout_weight=".2" />
+            android:layout_weight=".5" />
+
+        <SeekBar
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="30"
+            android:layout_marginLeft="@dimen/marginLeft"
+            android:layout_marginRight="@dimen/marginRight"
+            android:id="@+id/pin_settings_color_picker_green" />
 
         <Space
             android:layout_width="wrap_content"
@@ -130,7 +159,48 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight=".2"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
+        <Space
+            android:layout_width="0dp"
+            android:layout_marginLeft="@dimen/marginLeft"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5" />
+
+        <SeekBar
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="30"
+            android:layout_marginRight="@dimen/marginRight"
+            android:id="@+id/pin_settings_color_picker_blue" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5" />
+
+
+    </LinearLayout>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".2"/>
+    <Button
+        android:text=""
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/marginLeft"
+        android:layout_marginRight="@dimen/marginRight"
+        android:id="@+id/pin_settings_slider_color"
+        android:layout_weight="1" />
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".5"/>
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
