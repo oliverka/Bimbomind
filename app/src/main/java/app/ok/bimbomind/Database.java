@@ -72,11 +72,11 @@ public class Database extends SQLiteOpenHelper {
         CREATE_TABLE = " CREATE TABLE " + TABLE_PINS + " (" +SCORE_COLUMN_ID + " INTEGER PRIMARY KEY, " + PINS_COLUMN_R + " INT, " + PINS_COLUMN_G + " INT, " + PINS_COLUMN_B + " INT)";
         db.execSQL(CREATE_TABLE);
         CREATE_TABLE = " CREATE TABLE " + TABLE_PINS + " (" +SCORE_COLUMN_ID + " INTEGER PRIMARY KEY, "
-                + SAVE_PIN1 + " INT, " + SAVE_PIN1 + " INT, " + SAVE_PIN1 + " INT, " + SAVE_PIN1 + " INT, "
-                + SAVE_PIN1 + " INT, " + SAVE_PIN1 + " INT, " + SAVE_PIN1 + " INT, " + SAVE_PIN1 + " INT, "
+                + SAVE_PIN1 + " INT, " + SAVE_PIN2 + " INT, " + SAVE_PIN3 + " INT, " + SAVE_PIN4 + " INT, "
+                + SAVE_PIN5 + " INT, " + SAVE_PIN6 + " INT, " + SAVE_PIN7 + " INT, " + SAVE_PIN8 + " INT, "
                 + SAVE_ISCODE + " INT)";
         db.execSQL(CREATE_TABLE);
-        
+
         Cursor c = db.rawQuery("SELECT count(*) FROM " + TABLE_PINS, null);
         c.moveToFirst();
         if (c.getInt(0) < 8) updateColorSettings(DEFAULT_COLORS, db);
