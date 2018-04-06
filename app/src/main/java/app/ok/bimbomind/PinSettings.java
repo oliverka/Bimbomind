@@ -1,6 +1,7 @@
 package app.ok.bimbomind;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -11,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 /**
  * Created by o.k on 15.03.2018.
@@ -18,10 +20,7 @@ import android.widget.Spinner;
 
 public class PinSettings extends Activity {
 
-    private Button back;
     private Button slider_color;
-    private Button[] given_color;
-    private Button triangle, circle, rhombus, square;
     private SeekBar slider_red;
     private SeekBar slider_green;
     private SeekBar slider_blue;
@@ -29,14 +28,18 @@ public class PinSettings extends Activity {
     private Spinner pins;
     private int colornum;
     private int shape;
+    private Database database;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pin_settings);
         rgbs = new int[8][3];
-        given_color = new Button[5];
-        back = (Button) findViewById(R.id.pin_settings_back);
+        Button[] given_color = new Button[5];
+        database = new Database(this, null, null, 1);
+        context = this;
+        Button back = (Button) findViewById(R.id.pin_settings_back);
         slider_color = (Button) findViewById(R.id.pin_settings_slider_color);
         slider_red = (SeekBar) findViewById(R.id.pin_settings_color_picker_red);
         slider_green = (SeekBar) findViewById(R.id.pin_settings_color_picker_green);
@@ -46,10 +49,10 @@ public class PinSettings extends Activity {
         given_color[2] = (Button) findViewById(R.id.pin_settings_color3);
         given_color[3] = (Button) findViewById(R.id.pin_settings_color4);
         given_color[4] = (Button) findViewById(R.id.pin_settings_color5);
-        triangle = (Button) findViewById(R.id.pin_settings_dreieck);
-        circle = (Button) findViewById(R.id.pin_settings_kreis);
-        rhombus = (Button) findViewById(R.id.pin_settings_rhombus);
-        square = (Button) findViewById(R.id.pin_settings_quadrat);
+        Button triangle = (Button) findViewById(R.id.pin_settings_dreieck);
+        Button circle = (Button) findViewById(R.id.pin_settings_kreis);
+        Button rhombus = (Button) findViewById(R.id.pin_settings_rhombus);
+        Button square = (Button) findViewById(R.id.pin_settings_quadrat);
         slider_red.setMax(255);
         slider_red.getProgressDrawable().setColorFilter(0xFFFF0000, PorterDuff.Mode.MULTIPLY);
         slider_red.getThumb().setColorFilter(0xFFFF0000, PorterDuff.Mode.MULTIPLY);
@@ -200,24 +203,28 @@ public class PinSettings extends Activity {
             @Override
             public void onClick(View v) {
                 shape = 0;
+                Toast.makeText(context, "Triangle selected", Toast.LENGTH_SHORT).show();
             }
         });
         circle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 shape = 1;
+                Toast.makeText(context, "Circle selected", Toast.LENGTH_SHORT).show();
             }
         });
         rhombus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 shape = 2;
+                Toast.makeText(context, "Rhombus selected", Toast.LENGTH_SHORT).show();
             }
         });
         square.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 shape = 3;
+                Toast.makeText(context, "Square selected", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -225,6 +232,10 @@ public class PinSettings extends Activity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+
+        database.updateColorSettings(rgbs);
+        database.setPreference(Database.PREFERENCE_PINS_SHAPE, shape);
+
         Intent intent = new Intent(PinSettings.this, Settings.class);
         startActivity(intent);
         finish();

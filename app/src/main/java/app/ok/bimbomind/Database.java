@@ -265,9 +265,13 @@ public class Database extends SQLiteOpenHelper {
         return sp.getInteger(key);
     }
 
-    protected String getPreferenceString(String key) {return sp.getString(key);}
+    protected String getPreferenceString(String key) {
+        return sp.getString(key);
+    }
 
     protected void setPreference(String key, int value){
+        sp.storePreference(key, value);
+    }protected void setPreference(String key, String value){
         sp.storePreference(key, value);
     }
 }

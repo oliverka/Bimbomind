@@ -101,10 +101,10 @@
         android:layout_weight=".2"/>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
         <Space
             android:layout_width="0dp"
@@ -112,12 +112,12 @@
             android:layout_weight=".5" />
 
         <SeekBar
+            android:id="@+id/pin_settings_color_picker_red"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="30"
             android:layout_marginLeft="@dimen/marginLeft"
             android:layout_marginRight="@dimen/marginRight"
-            android:id="@+id/pin_settings_color_picker_red" />
+            android:layout_weight="30" />
 
         <Space
             android:layout_width="wrap_content"
@@ -127,7 +127,8 @@
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="0dp"
+        android:layout_weight=".2"/>
 
     <LinearLayout
         android:orientation="horizontal"

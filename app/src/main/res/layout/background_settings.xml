@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -39,19 +40,37 @@
             android:layout_weight="30"
             android:layout_marginLeft="@dimen/marginLeft"
             android:layout_marginRight="@dimen/marginRight"
-            android:id="@+id/background_settings_color_picker" />
+            android:id="@+id/background_settings_color_picker_red" />
 
         <Space
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight=".5" />
+    </LinearLayout>
 
-        <Button
-            android:text=""
-            android:layout_width="wrap_content"
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".2"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <Space
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/background_settings_slider_color"
-            android:layout_weight=".2" />
+            android:layout_weight=".5" />
+
+        <SeekBar
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="30"
+            android:layout_marginLeft="@dimen/marginLeft"
+            android:layout_marginRight="@dimen/marginRight"
+            android:id="@+id/background_settings_color_picker_green" />
 
         <Space
             android:layout_width="wrap_content"
@@ -60,6 +79,48 @@
 
     </LinearLayout>
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".2"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_marginLeft="@dimen/marginLeft"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5" />
+
+        <SeekBar
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="30"
+            android:layout_marginRight="@dimen/marginRight"
+            android:id="@+id/background_settings_color_picker_blue" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5" />
+
+
+    </LinearLayout>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".2"/>
+    <Button
+        android:text=""
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/marginLeft"
+        android:layout_marginRight="@dimen/marginRight"
+        android:id="@+id/background_settings_slider_color"
+        android:layout_weight="1" />
     <Space
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -174,15 +235,16 @@
         android:layout_height="0dp"
         android:layout_weight=".5"/>
 
-    <TextView
-        android:text=""
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView" />
-    <Space
+    <ImageView
+        android:id="@+id/background_settings_image_preview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="5"/>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".2"/>
 
     <LinearLayout
         android:orientation="horizontal"
