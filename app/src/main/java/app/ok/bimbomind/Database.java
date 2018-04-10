@@ -16,7 +16,7 @@ public class Database extends SQLiteOpenHelper {
     static final String DATABASE_NAME_FRONT = "bimbomind_front.db";
     private static final String TABLE_SCORE = "score";
     private static final String TABLE_PINS = "pins";
-    private static final String TABLE_SAVE = "turns";
+    private static final String TABLE_SAVE = "Savegame";
 
     private static final String SCORE_COLUMN_ID = "id";
     private static final String SCORE_COLUMN_SCORE = "score";
@@ -81,6 +81,7 @@ public class Database extends SQLiteOpenHelper {
         Cursor c = db.rawQuery("SELECT count(*) FROM " + TABLE_PINS, null);
         c.moveToFirst();
         if (c.getInt(0) < 8) updateColorSettings(DEFAULT_COLORS, db);
+        c.close();
         db.close();
     }
 
@@ -120,13 +121,14 @@ public class Database extends SQLiteOpenHelper {
         allowEmpty = getPreferenceBoolean(PREFERENCE_SAVEGAME_ALLOWEMPTY);
 
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_SAVE + " ORDER BY " + SCORE_COLUMN_ID + " ASC";
         Cursor cu = db.rawQuery(query, null);
         cu.moveToFirst();
         for(int i =  0; i<cu.getCount(); i++){
 
         }
+        cu.close();
         db.close();
 
         return null;
@@ -134,12 +136,18 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public Pin getPin(int id){
-        SQLiteDatabase db = this.getWritableDatabase();
-        return null;
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_SAVE + " WHERE " + SCORE_COLUMN_ID + "=" + id;
+        Cursor c = db.rawQuery(query, null);
+        c.moveToFirst();
+        Pin res = new Pin(id, c.getInt(1), c.getInt(2), c.getInt(3));
+        c.close();
+        db.close();
+        return res;
     }
 
     public int[][] getColorSettings(){
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_PINS + " ORDER BY " + SCORE_COLUMN_ID + " ASC";
         Cursor c = db.rawQuery(query, null);
         c.moveToFirst();
@@ -152,10 +160,10 @@ public class Database extends SQLiteOpenHelper {
             colors[i][1] = c.getInt(g);
             colors[i][2] = c.getInt(b);
         }
+        c.close();
         db.close();
         for(int i = 0; i< 8; i++){
             System.err.println("Color " +i+ " " + colors[i][0]+ " " + colors[i][1]+ " " + colors[i][2]);
-
         }
         return colors;
     }
@@ -165,7 +173,6 @@ public class Database extends SQLiteOpenHelper {
         updateColorSettings(colors, db);
         for(int i = 0; i< 8; i++) {
             System.err.println("Color saved " + i + " " + colors[i][0] + " " + colors[i][1] + " " + colors[i][2]);
-
         }
         db.close();
     }
@@ -273,8 +280,8 @@ public class Database extends SQLiteOpenHelper {
                 }
             }
         }
-        db.close();
         cursor.close();
+        db.close();
         return eintraege;
     }
 
@@ -284,6 +291,7 @@ public class Database extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         int i=cursor.getInt(0);
+        cursor.close();
         db.close();
         return i;
     }
@@ -294,6 +302,7 @@ public class Database extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         int i=cursor.getInt(0);
+        cursor.close();
         db.close();
         return i;
     }
