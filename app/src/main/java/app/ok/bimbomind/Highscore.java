@@ -85,7 +85,6 @@ public class Highscore extends Activity {
             }
         });
         init();
-
         db = new Database(this, null, null, 1);
     }
 
