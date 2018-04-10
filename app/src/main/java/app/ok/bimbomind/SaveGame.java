@@ -6,11 +6,11 @@ package app.ok.bimbomind;
 
 public class SaveGame {
     private Entry_Turn[] turns;
-    private int colors, holes, maxTurns;
+    private int colors, holes, maxTurns, pinCount;
     private Code c;
     private boolean allowMultiple, allowEmpty;
 
-    public SaveGame(Entry_Turn[] turnsMade, Code c, int maxTurns, int colorCount, int holes, boolean allowEmpty, boolean allowMultiple){
+    public SaveGame(Entry_Turn[] turnsMade, Code c, int maxTurns, int colorCount, int holes, boolean allowEmpty, boolean allowMultiple, int pinCount){
         turns = turnsMade;
         this.maxTurns = maxTurns;
         colors = colorCount;
@@ -18,6 +18,7 @@ public class SaveGame {
         this.holes = holes;
         this.allowEmpty = allowEmpty;
         this.allowMultiple = allowMultiple;
+        this.pinCount = pinCount;
     }
 
     public Entry_Turn[] getTurns(){return turns;}
@@ -27,4 +28,5 @@ public class SaveGame {
     public int getHoles(){return holes;}
     public boolean allowEmpty(){return allowEmpty;}
     public boolean allowMultiple(){return allowMultiple;}
+    public int getPinCount(){return pinCount;}
 }
