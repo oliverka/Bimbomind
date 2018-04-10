@@ -34,4 +34,6 @@
     <string name="guess">guess</string>
     <string name="name">Name</string>
     <string name="score">Score</string>
+    <string name="save">Save</string>
+    <string name="saved_succesfully">Saved successfully</string>
 </resources>

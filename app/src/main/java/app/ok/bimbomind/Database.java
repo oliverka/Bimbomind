@@ -160,16 +160,20 @@ public class Database extends SQLiteOpenHelper {
     public void updateColorSettings(int[][] colors) {
         SQLiteDatabase db = this.getWritableDatabase();
         updateColorSettings(colors, db);
+        for(int i = 0; i< 8; i++) {
+            System.err.println("Color saved " + i + " " + colors[i][0] + " " + colors[i][1] + " " + colors[i][2]);
+
+        }
         db.close();
     }
 
     public void updateColorSettings(int[][] colors, SQLiteDatabase db) {
-        for(int i = 0; i<8; i++){
+        for(int i = 0; i<8; i++) {
             ContentValues values = new ContentValues();
             values.put(PINS_COLUMN_R, colors[i][0]);
             values.put(PINS_COLUMN_G, colors[i][1]);
             values.put(PINS_COLUMN_B, colors[i][2]);
-            db.update(TABLE_PINS, values, "id=?", new String[] {Integer.toString(i)});
+            db.update(TABLE_PINS, values, "id=" + i, null);
         }
     }
 

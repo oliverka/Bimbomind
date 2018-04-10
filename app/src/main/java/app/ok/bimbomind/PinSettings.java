@@ -38,8 +38,10 @@ public class PinSettings extends Activity {
         rgbs = new int[8][3];
         Button[] given_color = new Button[5];
         database = new Database(this, null, null, 1);
+        rgbs = database.getColorSettings();
         context = this;
         Button back = (Button) findViewById(R.id.pin_settings_back);
+        Button save = (Button) findViewById(R.id.pin_settings_save);
         slider_color = (Button) findViewById(R.id.pin_settings_slider_color);
         slider_red = (SeekBar) findViewById(R.id.pin_settings_color_picker_red);
         slider_green = (SeekBar) findViewById(R.id.pin_settings_color_picker_green);
@@ -133,9 +135,17 @@ public class PinSettings extends Activity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                saveStats();
                 Intent intent = new Intent(PinSettings.this, Settings.class);
                 startActivity(intent);
                 finish();
+            }
+        });
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveStats();
+                Toast.makeText(context, R.string.saved_succesfully, Toast.LENGTH_SHORT).show();
             }
         });
         given_color[0].setOnClickListener(new View.OnClickListener() {
@@ -230,15 +240,33 @@ public class PinSettings extends Activity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        saveStats();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        saveStats();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        saveStats();
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
-
-        database.updateColorSettings(rgbs);
-        database.setPreference(Database.PREFERENCE_PINS_SHAPE, shape);
-
+        saveStats();
         Intent intent = new Intent(PinSettings.this, Settings.class);
         startActivity(intent);
         finish();
     }
-
+    private void saveStats() {
+        database.updateColorSettings(rgbs);
+        database.setPreference(Database.PREFERENCE_PINS_SHAPE, shape);
+    }
 }

@@ -288,7 +288,18 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5" />
 
+        <Button
+            android:text="@string/save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/pin_settings_save"
+            android:layout_gravity="bottom"
+            android:layout_weight="1" />
         <Space
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
