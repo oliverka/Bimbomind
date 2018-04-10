@@ -6,18 +6,20 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +33,7 @@ public class SettingsBackground extends Activity {
     private Button back;
     private Button slider_color;
     private Button choose_image;
+    private Button save;
     private SeekBar slider_red;
     private SeekBar slider_green;
     private SeekBar slider_blue;
@@ -73,15 +76,17 @@ public class SettingsBackground extends Activity {
         back = (Button) findViewById(R.id.background_settings_back);
         single_color = (RadioButton) findViewById(R.id.background_settings_single_color);
         image = (RadioButton) findViewById(R.id.background_settings_image);
+        save = (Button) findViewById(R.id.background_settings_save);
 
         String pathName = database.getPreferenceString(Database.PREFERENCE_SETTINGS_BACKGROUND_IMAGEPATH);
         System.err.println("Path: " + pathName);
         System.err.println("Red: " + database.getPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_COLOR_R));
         if (pathName != null && !pathName.equals("")) {
-            File f = new File(pathName);
+            System.err.println(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/" + pathName);
+            File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/" + pathName);
             if (f.exists()) {
-                Drawable d = Drawable.createFromPath(pathName);
-                image_preview.setImageDrawable(d);
+                Bitmap bitmap = BitmapFactory.decodeFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/" + pathName);
+                image_preview.setImageBitmap(bitmap);
             }
         }
         if (database.getPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_USEIMAGE) == 0)
@@ -98,11 +103,20 @@ public class SettingsBackground extends Activity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                saveStats();
                 Intent intent = new Intent(SettingsBackground.this, Settings.class);
                 startActivity(intent);
                 finish();
             }
         });
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveStats();
+                Toast.makeText(context, R.string.saved_succesfully, Toast.LENGTH_SHORT).show();
+            }
+        });
+
         slider_red.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -250,20 +264,45 @@ public class SettingsBackground extends Activity {
                 Bitmap bitmapImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
                 database.setPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_IMAGEPATH, selectedImage.getPath());
                 image_preview.setImageBitmap(bitmapImage);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            } catch (IOException e) {}
         }
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        database.setPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_COLOR_R, rgbs[0]);
-        database.setPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_COLOR_G, rgbs[1]);
-        database.setPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_COLOR_B, rgbs[2]);
+        saveStats();
         Intent intent = new Intent(SettingsBackground.this, Settings.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveStats();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        saveStats();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        saveStats();
+    }
+
+    private void saveStats() {
+        database.setPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_COLOR_R, rgbs[0]);
+        database.setPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_COLOR_G, rgbs[1]);
+        database.setPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_COLOR_B, rgbs[2]);
+        int use_image = 0;
+        if (image.isChecked()) {
+            use_image = 1;
+        }
+        database.setPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_USEIMAGE, use_image);
     }
 }
