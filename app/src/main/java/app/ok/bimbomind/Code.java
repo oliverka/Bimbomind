@@ -8,19 +8,18 @@ import java.util.Random;
 
 public class Code {
 
-    private Pin[] code, pins;
+    private Pin[] code;
 
-    public Code(int numberOfHoles, int numberOfPins, Pin[] pins, boolean allowEmpty, boolean allowMultiple) {
+    public Code(int numberOfHoles, int numberOfPins, boolean allowEmpty, boolean allowMultiple) {
         code = new Pin[numberOfHoles];
         for(int i=0;i<code.length;i++) {
-            code[i] = new Pin(0, 0, 0);
+            code[i] = new Pin(-1, 0, 0, 0);
         }
-        this.pins = pins;
         generateCode(numberOfHoles, numberOfPins,  allowEmpty, allowMultiple);
     }
 
-    public void setPins(Pin[] newPins) {
-        pins = newPins;
+    public Code(Pin[] code){
+        this.code = code;
     }
 
     public boolean generateCode(int numberOfHoles, int numberOfPins, boolean allowEmpty, boolean allowMultiple) {
@@ -45,7 +44,7 @@ public class Code {
                         if(!allowMultiple && occurred[tmp+1] > 0) {
                         }
                         else {
-                            code[i] = new Pin(-1, -1, -1);
+                            code[i] = new Pin(-1, -1, -1, -1);
                             occurred[tmp+1]++;
                             success = true;
                         }
@@ -54,7 +53,7 @@ public class Code {
                         if(!allowMultiple && occurred[tmp+1] > 0) {
                         }
                         else {
-                            code[i] = pins[tmp];
+                            //code[i] = pins[tmp];
                             occurred[tmp+1]++;
                             success = true;
                         }
@@ -65,7 +64,7 @@ public class Code {
                     if(!allowMultiple && occurred[tmp] > 0) {
                     }
                     else {
-                        code[i] = pins[tmp];
+                        //code[i] = pins[tmp];
                         occurred[tmp]++;
                         success = true;
                     }
@@ -80,6 +79,9 @@ public class Code {
         return true;
     }
 
+    public Pin[] getCode(){
+        return code;
+    }
 
     public void printCode() {
         System.out.print("Code: ");

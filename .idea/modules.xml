@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/BimboMind.iml" filepath="$PROJECT_DIR$/BimboMind.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Bimbomind.iml" filepath="$PROJECT_DIR$/Bimbomind.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

@@ -16,7 +16,7 @@ public class Database extends SQLiteOpenHelper {
     static final String DATABASE_NAME_FRONT = "bimbomind_front.db";
     private static final String TABLE_SCORE = "score";
     private static final String TABLE_PINS = "pins";
-    private static final String TABLE_TURNS = "turns";
+    private static final String TABLE_SAVE = "turns";
 
     private static final String SCORE_COLUMN_ID = "id";
     private static final String SCORE_COLUMN_SCORE = "score";
@@ -37,11 +37,10 @@ public class Database extends SQLiteOpenHelper {
     private static final String SAVE_PIN6 = "PIN6";
     private static final String SAVE_PIN7 = "PIN7";
     private static final String SAVE_PIN8 = "PIN8";
-    private static final String SAVE_ISCODE = "ISCODE";
 
     public static final String PREFERENCE_SAVEGAME_COLORCOUNT = "PREFERENCE_SAVEGAME_COLORCOUNT";
     public static final String PREFERENCE_SAVEGAME_MAXTURNS = "PREFERENCE_SAVEGAME_MAXTURNS";
-    public static final String PREFERENCE_SAVEGAME_USEDTURNS = "PREFERENCE_SAVEGAME_MAXTURNS";
+    public static final String PREFERENCE_SAVEGAME_PINCOUNT = "PREFERENCE_SAVEGAME_PINCOUNT";
     public static final String PREFERENCE_SAVEGAME_HOLES = "PREFERENCE_SAVEGAME_HOLES";
     public static final String PREFERENCE_SAVEGAME_ALLOWEMPTY = "PREFERENCE_SAVEGAME_ALLOWEMPTY";
     public static final String PREFERENCE_SAVEGAME_ALLOWMULTIPLE = "PREFERENCE_SAVEGAME_ALLOWMULTIPLE";
@@ -71,16 +70,69 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE);
         CREATE_TABLE = " CREATE TABLE " + TABLE_PINS + " (" +SCORE_COLUMN_ID + " INTEGER PRIMARY KEY, " + PINS_COLUMN_R + " INT, " + PINS_COLUMN_G + " INT, " + PINS_COLUMN_B + " INT)";
         db.execSQL(CREATE_TABLE);
-        CREATE_TABLE = " CREATE TABLE " + TABLE_PINS + " (" +SCORE_COLUMN_ID + " INTEGER PRIMARY KEY, "
+        CREATE_TABLE = " CREATE TABLE " + TABLE_SAVE + " (" +SCORE_COLUMN_ID + " INTEGER PRIMARY KEY, "
                 + SAVE_PIN1 + " INT, " + SAVE_PIN2 + " INT, " + SAVE_PIN3 + " INT, " + SAVE_PIN4 + " INT, "
-                + SAVE_PIN5 + " INT, " + SAVE_PIN6 + " INT, " + SAVE_PIN7 + " INT, " + SAVE_PIN8 + " INT, "
-                + SAVE_ISCODE + " INT)";
+                + SAVE_PIN5 + " INT, " + SAVE_PIN6 + " INT, " + SAVE_PIN7 + " INT, " + SAVE_PIN8 + " INT)";
         db.execSQL(CREATE_TABLE);
 
         Cursor c = db.rawQuery("SELECT count(*) FROM " + TABLE_PINS, null);
         c.moveToFirst();
         if (c.getInt(0) < 8) updateColorSettings(DEFAULT_COLORS, db);
-        //db.close();
+        db.close();
+    }
+
+    public void saveGame(SaveGame sg){
+        setPreference(PREFERENCE_SAVEGAME_COLORCOUNT, sg.getColorCount());
+        setPreference(PREFERENCE_SAVEGAME_ALLOWEMPTY, sg.allowEmpty());
+        setPreference(PREFERENCE_SAVEGAME_ALLOWMULTIPLE, sg.allowMultiple());
+        setPreference(PREFERENCE_SAVEGAME_MAXTURNS, sg.getMaxTurns());
+        setPreference(PREFERENCE_SAVEGAME_HOLES, sg.getHoles());
+        resetDatabase(TABLE_SAVE);
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        for(int i = 1; i<9; i++){
+            values.put("PIN"+i, sg.getCode().getCode()[i-1].getID());
+        }
+        db.insert(TABLE_SAVE, null, values);
+        for(int i = 0; i<9; i++){
+            values = new ContentValues();
+            for(int j = 1; j<9; j++){
+                values.put("PIN"+i, sg.getCode().getCode()[i-1].getID());
+            }
+            db.insert(TABLE_SAVE, null, values);
+        }
+        db.close();
+    }
+
+    public SaveGame loadGame(){
+        Entry_Turn[] turns;
+        int colors, holes, maxTurns;
+        Code c;
+        boolean allowMultiple, allowEmpty;
+
+        colors = getPreference(PREFERENCE_SAVEGAME_COLORCOUNT);
+        maxTurns = getPreference(PREFERENCE_SAVEGAME_MAXTURNS);
+        holes = getPreference(PREFERENCE_SAVEGAME_HOLES);
+        allowMultiple = getPreferenceBoolean(PREFERENCE_SAVEGAME_ALLOWMULTIPLE);
+        allowEmpty = getPreferenceBoolean(PREFERENCE_SAVEGAME_ALLOWEMPTY);
+
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_SAVE + " ORDER BY " + SCORE_COLUMN_ID + " ASC";
+        Cursor cu = db.rawQuery(query, null);
+        cu.moveToFirst();
+        for(int i =  0; i<cu.getCount(); i++){
+
+        }
+        db.close();
+
+        return null;
+        //return new SaveGame(turns, c, maxTurns, colors, holes, allowEmpty, allowMultiple);
+    }
+
+    public Pin getPin(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return null;
     }
 
     public int[][] getColorSettings(){
@@ -261,17 +313,10 @@ public class Database extends SQLiteOpenHelper {
         db.close();
     }
 
-    protected int getPreference(String key){
-        return sp.getInteger(key);
-    }
-
-    protected String getPreferenceString(String key) {
-        return sp.getString(key);
-    }
-
-    protected void setPreference(String key, int value){
-        sp.storePreference(key, value);
-    }protected void setPreference(String key, String value){
-        sp.storePreference(key, value);
-    }
+    protected int getPreference(String key){return sp.getInteger(key); }
+    protected String getPreferenceString(String key) { return sp.getString(key); }
+    protected boolean getPreferenceBoolean(String key) { return sp.getBoolean(key); }
+    protected void setPreference(String key, int value){ sp.storePreference(key, value);}
+    protected void setPreference(String key, String value){ sp.storePreference(key, value); }
+    protected void setPreference(String key, boolean value) {sp.storePreference(key, value);}
 }

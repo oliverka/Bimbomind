@@ -21,13 +21,18 @@ public class StoredPreferences{
     protected void storePreference(String key, String value){
         ed.putString(key, value);
         System.err.println(key + " to store: " + value);
-        ed.commit();
+        ed.apply();
     }
 
     protected void storePreference(String key, int value){
         ed.putInt(key, value);
         System.err.println(key + " to store: " + value);
-        ed.commit();
+        ed.apply();
+    }
+
+    protected void storePreference(String key, boolean value){
+        ed.putBoolean(key, value);
+        ed.apply();
     }
 
     protected String getString(String key){
@@ -38,5 +43,9 @@ public class StoredPreferences{
     protected int getInteger(String key){
         System.err.println(key + " got: " + sp.getInt(key,0));
         return sp.getInt(key, 0);
+    }
+
+    protected boolean getBoolean(String key){
+        return sp.getBoolean(key, false);
     }
 }

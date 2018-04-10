@@ -7,8 +7,10 @@ package app.ok.bimbomind;
 public class Pin {
 
     private int r, g, b;
+    private int id;
 
-    public Pin(int r, int g, int b) {
+    public Pin(int id, int r, int g, int b) {
+        this.id = id;
         this.r = r;
         this.g= g;
         this.b = b;
@@ -33,4 +35,7 @@ public class Pin {
         int a = r+g+b;
         return String.valueOf(a);
     }
+
+    public int getID(){return id;}
+    public int[] getRGB(){return new int[] {r, g, b};}
 }
