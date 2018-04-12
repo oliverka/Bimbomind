@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
@@ -85,7 +86,8 @@ public class Highscore extends Activity {
             }
         });
         init();
-        db = new Database(this, null, null, 1);
+        //db = new Database(this, null, null, 1);
+        db = Database.getInstance();
     }
 
     private void reset_highscore() {

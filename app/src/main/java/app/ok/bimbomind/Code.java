@@ -8,10 +8,13 @@ import java.util.Random;
 
 public class Code {
 
+    //enthält den zu lösenden Code
     private Pin[] code;
 
+    //Konstruktor zur verwendung als Code-Generator. setzt alle notwendigen parameter
     public Code(int numberOfHoles, int numberOfPins, boolean allowEmpty, boolean allowMultiple) {
         code = new Pin[numberOfHoles];
+        //initialisiere Code
         for(int i=0;i<code.length;i++) {
             code[i] = new Pin(-1, 0, 0, 0);
         }
@@ -23,16 +26,17 @@ public class Code {
     }
 
     public boolean generateCode(int numberOfHoles, int numberOfPins, boolean allowEmpty, boolean allowMultiple) {
-        if(numberOfHoles > numberOfPins && !allowMultiple) { //More Holes than can be filled
+        if(numberOfHoles > numberOfPins && !allowMultiple) { //Mehr Löcher angegeben als mit den gegebenen Parametern gefüllt werden können
             return false;
         }
 
         Random r = new Random();
 
         int range = numberOfPins;
-        if(allowEmpty) range++;
-        int[] occurred = new int[range];
+        if(allowEmpty) range++; //Zusätzliche Möglichkeit, wenn leere zugelassen sind
+        int[] occurred = new int[range]; //Speichert bereits aufgetretene Pins
 
+        Database db = Database.getInstance();
         for(int i = 0; i<numberOfHoles; i++) {
             boolean success = false;
             while(!success) {
@@ -53,7 +57,7 @@ public class Code {
                         if(!allowMultiple && occurred[tmp+1] > 0) {
                         }
                         else {
-                            //code[i] = pins[tmp];
+                            code[i] = db.getPin(i);
                             occurred[tmp+1]++;
                             success = true;
                         }
@@ -64,7 +68,7 @@ public class Code {
                     if(!allowMultiple && occurred[tmp] > 0) {
                     }
                     else {
-                        //code[i] = pins[tmp];
+                        code[i] = db.getPin(i);
                         occurred[tmp]++;
                         success = true;
                     }
@@ -83,6 +87,7 @@ public class Code {
         return code;
     }
 
+    //gibt den code an der konsole aus
     public void printCode() {
         System.out.print("Code: ");
         for(int i = 0; i<code.length; i++) {
@@ -91,6 +96,7 @@ public class Code {
         System.out.println();
     }
 
+    //bestimmt, ob leere Stellen vorkommen
     private boolean containsEmpty() {
         for(int i = 0; i<code.length; i++) {
             if(code[i].isEmpty()) {
@@ -100,6 +106,7 @@ public class Code {
         return false;
     }
 
+    //bestimmt, ob ein Pin mehrfach vorkommt
     private boolean containsMultiple() {
         for(int i = 0; i<code.length-1; i++) {
             for(int j = i+1; j<code.length; j++) {

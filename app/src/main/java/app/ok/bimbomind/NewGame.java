@@ -32,7 +32,8 @@ public class NewGame extends Activity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_game);
-        database = new Database(this,null,null, 1);
+        //database = new Database(this,null,null, 1);
+        database = Database.getInstance();
         Button new_game = (Button) findViewById(R.id.new_game_start_game);
         Button abort = (Button) findViewById(R.id.new_game_abort);
         allow_empty = (CheckBox) findViewById(R.id.new_game_allow_empty);
