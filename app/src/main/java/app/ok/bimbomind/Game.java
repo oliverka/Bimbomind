@@ -25,14 +25,16 @@ public class Game extends Activity {
     private LinearLayout color_picker;
     private LinearLayout[] field_code_pins;
     private TextView[] field_color_picker;
+    private LinearLayout layout;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_field);
-        Context context = this;
+        context = this;
         Button back = (Button) findViewById(R.id.game_field_back);
-        LinearLayout layout = (LinearLayout) findViewById(R.id.game_field_layout);
+        layout = (LinearLayout) findViewById(R.id.game_field_field);
         field_game = (LinearLayout) findViewById(R.id.game_field_code);
         color_picker = (LinearLayout) findViewById(R.id.game_field_color_picker);
         back.setOnClickListener(new View.OnClickListener() {
@@ -44,6 +46,7 @@ public class Game extends Activity {
             }
         });
         int field_code = 5;
+        int rounds = 10;
         field_color_picker = new TextView[field_code];
         field_code_pins = new LinearLayout[field_code];
         for (int i = 0; i < field_color_picker.length; i ++) {
@@ -56,6 +59,45 @@ public class Game extends Activity {
         }
         setFieldGame(field_code);
         setFieldColorPicker(field_code);
+        init(field_code, rounds);
+    }
+
+    private void init(final int field_code, final int rounds) {
+        final LinearLayout[] rows = new LinearLayout[rounds];
+        final Button[][] firstrow = new Button[rounds][field_code];
+        final Button[][] result = new Button[rounds][field_code];
+        ViewTreeObserver vto = layout.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener (new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                layout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                double field_width_1 = (layout.getWidth() / (field_code * 2 - 1)) * 0.66;
+                double field_width_2 = (layout.getWidth() / (field_code * 2 - 1)) * 0.33;
+                double field_height = (color_picker.getHeight());
+                System.err.println("xy: " + field_width_1 + " " + layout.getWidth() + " " + layout.getMeasuredHeight());
+                for (int i = 0; i < rows.length; i ++) {
+                    LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams((int) layout.getWidth(), (int) field_height);
+                    rows[i] = new LinearLayout(context);
+                    rows[i].setOrientation(LinearLayout.HORIZONTAL);
+                    for (int j = 0; j < field_code; j++) {
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) field_width_1, (int) (field_game.getHeight() * 0.66));
+                        firstrow[i][j] = new Button(context);
+                        firstrow[i][j].setX((float) (field_width_1 * j));
+                        rows[i].addView(firstrow[i][j], params);
+                    }
+                    layout.addView(rows[i],params1);
+                }
+                for (int i = 0; i < rows.length; i ++) {
+                    for (int j = 0; j < field_code; j++) {
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) field_width_2, (int) (field_game.getHeight() * 0.66));
+                        result[i][j] = new Button(context);
+                        result[i][j].setX((float) (field_width_2 * j) + (float) (field_width_1 * field_code));
+                        result[i][j].setText("test");
+                        rows[i].addView(result[i][j], params);
+                    }
+                }
+            }
+        });
     }
 
     private void setFieldGame(final int field_code) {
