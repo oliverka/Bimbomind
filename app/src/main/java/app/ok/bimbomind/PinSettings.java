@@ -35,10 +35,15 @@ public class PinSettings extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pin_settings);
-        rgbs = new int[8][3];
         Button[] given_color = new Button[5];
         database = Database.getInstance();
         rgbs = database.getColorSettings();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 3; j++) {
+                System.err.print(rgbs[i][j] + ", ");
+            }
+            System.err.println();
+        }
         context = this;
         Button back = (Button) findViewById(R.id.pin_settings_back);
         Button save = (Button) findViewById(R.id.pin_settings_save);
