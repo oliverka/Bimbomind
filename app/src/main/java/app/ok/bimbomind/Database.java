@@ -82,7 +82,6 @@ public class Database extends SQLiteOpenHelper {
         c.moveToFirst();
         if (c.getInt(0) < 8) updateColorSettings(DEFAULT_COLORS, db);
         c.close();
-        db.close();
     }
 
     public void saveGame(SaveGame sg) {

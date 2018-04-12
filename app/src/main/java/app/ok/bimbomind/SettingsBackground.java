@@ -79,11 +79,9 @@ public class SettingsBackground extends Activity {
         save = (Button) findViewById(R.id.background_settings_save);
 
         String pathName = database.getPreferenceString(Database.PREFERENCE_SETTINGS_BACKGROUND_IMAGEPATH);
-        System.err.println("Path: " + pathName);
-        System.err.println("Red: " + database.getPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_COLOR_R));
         if (pathName != null && !pathName.equals("")) {
-            System.err.println(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/" + pathName);
-            File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/" + pathName);
+            File f = new File(pathName);
+            System.err.println("Pathname: " + pathName);
             if (f.exists()) {
                 Bitmap bitmap = BitmapFactory.decodeFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/" + pathName);
                 image_preview.setImageBitmap(bitmap);
@@ -264,6 +262,7 @@ public class SettingsBackground extends Activity {
                 Bitmap bitmapImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
                 database.setPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_IMAGEPATH, selectedImage.getPath());
                 image_preview.setImageBitmap(bitmapImage);
+                System.err.println("Path: " + selectedImage.getPath());
             } catch (IOException e) {}
         }
     }
