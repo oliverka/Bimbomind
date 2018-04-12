@@ -86,9 +86,14 @@ public class Game extends Activity {
                     field_color_picker[i].setX((float) (field_width * i));
                     field_color_picker[i].setMinimumWidth((int) field_width);
                     field_color_picker[i].setMinimumHeight((int) (field_game.getHeight() * 0.66));
-                    field_color_picker[i].setBackgroundColor(Color.RED);
                     color_picker.addView(field_color_picker[i]);
                 }
+                field_color_picker[0].setBackgroundColor(Color.RED);
+                field_color_picker[1].setBackgroundColor(Color.BLUE);
+                field_color_picker[2].setBackgroundColor(Color.GREEN);
+                field_color_picker[3].setBackgroundColor(Color.YELLOW);
+                field_color_picker[4].setBackgroundColor(Color.MAGENTA);
+
             }
         });
     }
@@ -103,8 +108,7 @@ public class Game extends Activity {
         public boolean onTouch(View view, MotionEvent motionEvent) {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                 ClipData data = ClipData.newPlainText("", "");
-                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
-                        view);
+                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
                 view.startDrag(data, shadowBuilder, view, 0);
                 //view.setVisibility(View.INVISIBLE);
                 return true;
@@ -113,6 +117,8 @@ public class Game extends Activity {
             }
         }
     }
+
+
     class MyDragListener implements View.OnDragListener {
 
         int i = 9;
@@ -128,7 +134,6 @@ public class Game extends Activity {
             }
             switch (event.getAction()) {
                 case DragEvent.ACTION_DRAG_STARTED:
-                    // do nothing
                     break;
                 case DragEvent.ACTION_DRAG_ENTERED:
                     break;
@@ -136,11 +141,8 @@ public class Game extends Activity {
                     break;
                 case DragEvent.ACTION_DROP:
                     View view = (View) event.getLocalState();
-                    ViewGroup owner = (ViewGroup) view.getParent();
-                    owner.removeView(view);
-                    LinearLayout container = (LinearLayout) v;
                     if (((LinearLayout) v).getChildCount() < 1)
-                        container.addView(view);
+                        v.setBackground(view.getBackground());
                     view.setVisibility(View.VISIBLE);
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:

@@ -8,7 +8,8 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * Created by Familie on 17.06.2016.
+ * Created by ok on 17.06.2016.
+ * Modified by Johann on 12.04.2018.
  */
 public class Database extends SQLiteOpenHelper {
 
