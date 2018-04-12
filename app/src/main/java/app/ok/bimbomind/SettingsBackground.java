@@ -51,7 +51,8 @@ public class SettingsBackground extends Activity {
         setContentView(R.layout.background_settings);
         rgbs = new int[3];
         Button[] given_color = new Button[5];
-        database = new Database(this, null, null, 1);
+        //database = new Database(this, null, null, 1);
+        database = Database.getInstance();
         context = this;
         slider_color = (Button) findViewById(R.id.background_settings_slider_color);
         choose_image = (Button) findViewById(R.id.background_settings_choose_image);

@@ -37,7 +37,7 @@ public class PinSettings extends Activity {
         setContentView(R.layout.pin_settings);
         rgbs = new int[8][3];
         Button[] given_color = new Button[5];
-        database = new Database(this, null, null, 1);
+        database = Database.getInstance();
         rgbs = database.getColorSettings();
         context = this;
         Button back = (Button) findViewById(R.id.pin_settings_back);

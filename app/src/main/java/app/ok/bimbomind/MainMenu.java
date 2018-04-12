@@ -25,6 +25,7 @@ public class MainMenu extends AppCompatActivity {
         highscore = (Button) findViewById(R.id.main_menu_highscore);
         settings = (Button) findViewById(R.id.main_menu_settings);
         context = this;
+        Database.getInstance(context);
         new_game.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,6 +58,5 @@ public class MainMenu extends AppCompatActivity {
                 finish();
             }
         });
-        new Database(this, null, null, 0);
     }
 }
