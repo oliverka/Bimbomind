@@ -66,21 +66,21 @@ public class Database extends SQLiteOpenHelper {
         sp = new StoredPreferences(context);
     }
 
-    private static Database db = null;
+    private static Database database = null;
 
     public static Database getInstance(Context c){
-        if(db != null){
-            return db;
+        if(database != null){
+            return database;
         }
         else{
-            db =  new Database(c, null, null, 1);
-            db.onCreate(db.getWritableDatabase());
-            return db;
+            database =  new Database(c, null, null, 1);
+            database.onCreate(database.getWritableDatabase());
+            return database;
         }
     }
 
     public static Database getInstance(){
-        return db;
+        return database;
     }
 
     @Override
@@ -90,30 +90,19 @@ public class Database extends SQLiteOpenHelper {
         try{
             db.execSQL(CREATE_TABLE);
         }
-        catch(SQLiteException e){
-            e.printStackTrace();
-        }
+        catch(SQLiteException e){ }
         CREATE_TABLE = " CREATE TABLE " + TABLE_PINS + " (" +SCORE_COLUMN_ID + " INTEGER PRIMARY KEY, " + PINS_COLUMN_R + " INT, " + PINS_COLUMN_G + " INT, " + PINS_COLUMN_B + " INT)";
         try{
             db.execSQL(CREATE_TABLE);
         }
-        catch(SQLiteException e){
-            e.printStackTrace();
-        }
+        catch(SQLiteException e){ }
         CREATE_TABLE = " CREATE TABLE " + TABLE_SAVE + " (" +SCORE_COLUMN_ID + " INTEGER PRIMARY KEY, "
                 + SAVE_PIN1 + " INT, " + SAVE_PIN2 + " INT, " + SAVE_PIN3 + " INT, " + SAVE_PIN4 + " INT, "
                 + SAVE_PIN5 + " INT, " + SAVE_PIN6 + " INT, " + SAVE_PIN7 + " INT, " + SAVE_PIN8 + " INT)";
         try{
             db.execSQL(CREATE_TABLE);
         }
-        catch(SQLiteException e){
-            e.printStackTrace();
-        }
-
-        Cursor c = db.rawQuery("SELECT count(*) FROM " + TABLE_PINS, null);
-        c.moveToFirst();
-        if (c.getInt(0) < 8) updateColorSettings(DEFAULT_COLORS, db);
-        c.close();
+        catch(SQLiteException e){ }
     }
 
     public void saveGame(SaveGame sg) {
@@ -191,6 +180,7 @@ public class Database extends SQLiteOpenHelper {
                 colors[i][0] = c.getInt(r);
                 colors[i][1] = c.getInt(g);
                 colors[i][2] = c.getInt(b);
+                c.moveToNext();
             }
             c.close();
         }
@@ -205,6 +195,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public void updateColorSettings(int[][] colors) {
+        resetDatabase(TABLE_PINS);
         SQLiteDatabase db = this.getWritableDatabase();
         updateColorSettings(colors, db);
         for (int i = 0; i < 8; i++) {
@@ -220,7 +211,7 @@ public class Database extends SQLiteOpenHelper {
             values.put(PINS_COLUMN_G, colors[i][1]);
             values.put(PINS_COLUMN_B, colors[i][2]);
             try{
-                db.update(TABLE_PINS, values, "id=" + i, null);
+                db.insert(TABLE_PINS,  null, values);
             }
             catch(SQLiteException e){
                 e.printStackTrace();
