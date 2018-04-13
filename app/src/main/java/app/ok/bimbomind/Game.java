@@ -5,11 +5,11 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -27,16 +27,27 @@ public class Game extends Activity {
     private TextView[] field_color_picker;
     private LinearLayout layout;
     private Context context;
+    private Button set;
+    private Button[][] firstrow;
+    private int round;
+    private int[][] rgbs;
+    private Drawable[] backgrounds;
+    private Database database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_field);
+        database = Database.getInstance();
+        final int field_code = 8; //database.getPreference(Database.PREFERENCE_SAVEGAME_COLORCOUNT);
+        int rounds = 10; //database.getPreference(Database.PREFERENCE_SAVEGAME_MAXTURNS);
+        rgbs = database.getColorSettings();
         context = this;
         Button back = (Button) findViewById(R.id.game_field_back);
         layout = (LinearLayout) findViewById(R.id.game_field_field);
         field_game = (LinearLayout) findViewById(R.id.game_field_code);
         color_picker = (LinearLayout) findViewById(R.id.game_field_color_picker);
+        set = (Button) findViewById(R.id.game_field_set);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,8 +56,19 @@ public class Game extends Activity {
                 finish();
             }
         });
-        int field_code = 5;
-        int rounds = 10;
+        set.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Drawable[] backgrounds1 = new Drawable[field_code];
+                for (int i = 0; i < field_code_pins.length; i++) {
+                    backgrounds1[i] = field_code_pins[i].getBackground();
+                    firstrow[round][i].setBackground(backgrounds1[i]);
+                    if (backgrounds[i] == backgrounds1[i])
+                        System.err.println("Color yeah yeah yeah!!!");
+                }
+                round ++;
+            }
+        });
         field_color_picker = new TextView[field_code];
         field_code_pins = new LinearLayout[field_code];
         for (int i = 0; i < field_color_picker.length; i ++) {
@@ -64,7 +86,7 @@ public class Game extends Activity {
 
     private void init(final int field_code, final int rounds) {
         final LinearLayout[] rows = new LinearLayout[rounds];
-        final Button[][] firstrow = new Button[rounds][field_code];
+        firstrow = new Button[rounds][field_code];
         final Button[][] result = new Button[rounds][field_code];
         ViewTreeObserver vto = layout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener (new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -74,9 +96,8 @@ public class Game extends Activity {
                 double field_width_1 = (layout.getWidth() / (field_code * 2 - 1)) * 0.66;
                 double field_width_2 = (layout.getWidth() / (field_code * 2 - 1)) * 0.33;
                 double field_height = (color_picker.getHeight());
-                System.err.println("xy: " + field_width_1 + " " + layout.getWidth() + " " + layout.getMeasuredHeight());
                 for (int i = 0; i < rows.length; i ++) {
-                    LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams((int) layout.getWidth(), (int) field_height);
+                    LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(layout.getWidth(), (int) field_height);
                     rows[i] = new LinearLayout(context);
                     rows[i].setOrientation(LinearLayout.HORIZONTAL);
                     for (int j = 0; j < field_code; j++) {
@@ -130,12 +151,23 @@ public class Game extends Activity {
                     field_color_picker[i].setMinimumHeight((int) (field_game.getHeight() * 0.66));
                     color_picker.addView(field_color_picker[i]);
                 }
-                field_color_picker[0].setBackgroundColor(Color.RED);
-                field_color_picker[1].setBackgroundColor(Color.BLUE);
-                field_color_picker[2].setBackgroundColor(Color.GREEN);
-                field_color_picker[3].setBackgroundColor(Color.YELLOW);
-                field_color_picker[4].setBackgroundColor(Color.MAGENTA);
-
+                backgrounds = new Drawable[field_code];
+                int double1 = -1;
+                for (int i = 0; i < field_code; i++) {
+                    for (int j = 0; j < i; j++) {
+                        if (rgbs[i][0] == rgbs[j][0] && rgbs[i][1] == rgbs[j][1] && rgbs[i][2] == rgbs[j][2] && i != j)
+                            double1 = j;
+                    }
+                    if (double1 == -1) {
+                        field_color_picker[i].setBackgroundColor(Color.rgb(rgbs[i][0], rgbs[i][1], rgbs[i][2]));
+                        backgrounds[i] = field_color_picker[i].getBackground();
+                    }
+                    else {
+                        field_color_picker[i].setBackground(backgrounds[double1]);
+                        backgrounds[i] = backgrounds[double1];
+                    }
+                    double1 = -1;
+                }
             }
         });
     }
@@ -183,8 +215,9 @@ public class Game extends Activity {
                     break;
                 case DragEvent.ACTION_DROP:
                     View view = (View) event.getLocalState();
-                    if (((LinearLayout) v).getChildCount() < 1)
+                    if (((LinearLayout) v).getChildCount() < 1) {
                         v.setBackground(view.getBackground());
+                    }
                     view.setVisibility(View.VISIBLE);
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
