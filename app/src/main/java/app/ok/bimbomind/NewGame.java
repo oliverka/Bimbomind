@@ -48,7 +48,13 @@ public class NewGame extends Activity {
             @Override
             public void onClick(View v) {
                 if (saveStats()) {
-                    Intent intent = new Intent(NewGame.this, Game.class);
+                    Intent intent;
+                    if(set_guess.isChecked()){
+                        intent = new Intent(NewGame.this, Game.class);
+                    }
+                    else{
+                        intent = new Intent(NewGame.this, EnterCode.class);
+                    }
                     startActivity(intent);
                     finish();
                 }
@@ -101,13 +107,13 @@ public class NewGame extends Activity {
                 error_text.append("Only 5, 6 or 8 holes are allow\n");
             }
             if (turns1 && colors1 && holes1) {
-                database.setPreference(Database.PREFERENCE_SAVEGAME_ALLOWEMPTY, String.valueOf(allow_empty.isChecked()));
-                database.setPreference(Database.PREFERENCE_SAVEGAME_ALLOWMULTIPLE, String.valueOf(allow_multiple.isChecked()));
+                database.setPreference(Database.PREFERENCE_SAVEGAME_ALLOWEMPTY, allow_empty.isChecked());
+                database.setPreference(Database.PREFERENCE_SAVEGAME_ALLOWMULTIPLE, allow_multiple.isChecked());
                 database.setPreference(Database.PREFERENCE_SAVEGAME_MAXTURNS, Integer.parseInt(String.valueOf(turns.getText())));
                 database.setPreference(Database.PREFERENCE_SAVEGAME_COLORCOUNT, Integer.parseInt(String.valueOf(colors.getText())));
                 database.setPreference(Database.PREFERENCE_SAVEGAME_HOLES, Integer.parseInt(String.valueOf(holes.getText())));
-                database.setPreference(Database.PREFERENCE_SAVEGAME_AI, String.valueOf(ai_human.isChecked()));
-                database.setPreference(Database.PREFERENCE_SAVEGAME_SET, String.valueOf(set_guess.isChecked()));
+                database.setPreference(Database.PREFERENCE_SAVEGAME_AI, ai_human.isChecked());
+                database.setPreference(Database.PREFERENCE_SAVEGAME_SET, set_guess.isChecked());
                 return true;
             }
         }catch (NumberFormatException e) {

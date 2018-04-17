@@ -132,28 +132,37 @@ public class Database extends SQLiteOpenHelper {
     public SaveGame loadGame() {
         Entry_Turn[] turns;
         int colors, holes, maxTurns;
-        Code c;
+        Code c = null;
         boolean allowMultiple, allowEmpty;
 
         colors = getPreference(PREFERENCE_SAVEGAME_COLORCOUNT);
         maxTurns = getPreference(PREFERENCE_SAVEGAME_MAXTURNS);
+        turns = new Entry_Turn[maxTurns];
         holes = getPreference(PREFERENCE_SAVEGAME_HOLES);
         allowMultiple = getPreferenceBoolean(PREFERENCE_SAVEGAME_ALLOWMULTIPLE);
         allowEmpty = getPreferenceBoolean(PREFERENCE_SAVEGAME_ALLOWEMPTY);
-
 
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_SAVE + " ORDER BY " + SCORE_COLUMN_ID + " ASC";
         Cursor cu = db.rawQuery(query, null);
         cu.moveToFirst();
-        for (int i = 0; i < cu.getCount(); i++) {
-
+        for (int i = 0; i < cu.getCount() && i<maxTurns; i++) {
+            Pin[] turnPins = new Pin[holes];
+            for(int j = 0; j<holes; j++){
+                turnPins[j] = database.getPin(cu.getInt(i+1));
+            }
+            if(i == 0){
+                c = new Code(turnPins);
+            }
+            else{
+                turns[i-1] = new Entry_Turn(new Code(turnPins), false);
+            }
+            cu.moveToNext();
         }
         cu.close();
         db.close();
 
-        return null;
-        //return new SaveGame(turns, c, maxTurns, colors, holes, allowEmpty, allowMultiple);
+        return new SaveGame(turns, c, maxTurns, colors, holes, allowEmpty, allowMultiple);
     }
 
     public Pin getPin(int id){
@@ -189,9 +198,6 @@ public class Database extends SQLiteOpenHelper {
             e.printStackTrace();
         }
         db.close();
-        for (int i = 0; i < 8; i++) {
-            System.err.println("Color " + i + " " + colors[i][0] + " " + colors[i][1] + " " + colors[i][2]);
-        }
         return colors;
     }
 
@@ -199,9 +205,6 @@ public class Database extends SQLiteOpenHelper {
         resetDatabase(TABLE_PINS);
         SQLiteDatabase db = this.getWritableDatabase();
         updateColorSettings(colors, db);
-        for (int i = 0; i < 8; i++) {
-            System.err.println("Color saved " + i + " " + colors[i][0] + " " + colors[i][1] + " " + colors[i][2]);
-        }
         db.close();
     }
 
@@ -249,7 +252,6 @@ public class Database extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.insert(TABLE_SCORE, null, values);
-//        System.err.println("Highscore: "+getAllScores()[0].getScore());
         db.close();
     }
 
