@@ -29,18 +29,20 @@ public class Game extends Activity {
     private Context context;
     private Button set;
     private Button[][] firstrow;
+    private Button[][] result;
     private int round;
     private int[][] rgbs;
     private Drawable[] backgrounds;
     private Database database;
+    private int rightPlace, rightColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_field);
         database = Database.getInstance();
-        final int field_code = 8; //database.getPreference(Database.PREFERENCE_SAVEGAME_COLORCOUNT);
-        int rounds = 10; //database.getPreference(Database.PREFERENCE_SAVEGAME_MAXTURNS);
+        final int field_code = 5; //database.getPreference(Database.PREFERENCE_SAVEGAME_COLORCOUNT);
+        final int rounds = 10; //database.getPreference(Database.PREFERENCE_SAVEGAME_MAXTURNS);
         rgbs = database.getColorSettings();
         context = this;
         Button back = (Button) findViewById(R.id.game_field_back);
@@ -59,14 +61,36 @@ public class Game extends Activity {
         set.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Drawable[] backgrounds1 = new Drawable[field_code];
-                for (int i = 0; i < field_code_pins.length; i++) {
-                    backgrounds1[i] = field_code_pins[i].getBackground();
-                    firstrow[round][i].setBackground(backgrounds1[i]);
-                    if (backgrounds[i] == backgrounds1[i])
-                        System.err.println("Color yeah yeah yeah!!!");
+                if (round < rounds) {
+                    Drawable[] backgrounds1 = new Drawable[field_code];
+                    int[] already_right_place = new int[field_code];
+                    int k = 0;
+                    for (int i = 0; i < field_code_pins.length; i++) {
+                        backgrounds1[i] = field_code_pins[i].getBackground();
+                        firstrow[round][i].setBackground(backgrounds1[i]);
+                        if (backgrounds[i] == backgrounds1[i]) {
+                            rightPlace++;
+                            result[round][k].setBackgroundColor(Color.RED);
+                            k ++;
+                            already_right_place[i] = 1;
+                        }
+                    }
+                    for (int i = 0; i < field_code_pins.length; i++) {
+                        if (already_right_place[i] == 0) {
+                            for (int j = 0; j < field_code_pins.length; j++) {
+                                if (backgrounds[i] == backgrounds1[j]) {
+                                    rightColor++;
+                                    result[round][k].setBackgroundColor(Color.BLACK);
+                                    k ++;
+                                }
+                            }
+                        }
+                    }
+                    System.err.println("Right place: " + rightPlace + " Right color: " + rightColor);
+                    rightColor = 0;
+                    rightPlace = 0;
+                    round++;
                 }
-                round ++;
             }
         });
         field_color_picker = new TextView[field_code];
@@ -87,7 +111,7 @@ public class Game extends Activity {
     private void init(final int field_code, final int rounds) {
         final LinearLayout[] rows = new LinearLayout[rounds];
         firstrow = new Button[rounds][field_code];
-        final Button[][] result = new Button[rounds][field_code];
+        result = new Button[rounds][field_code];
         ViewTreeObserver vto = layout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener (new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
