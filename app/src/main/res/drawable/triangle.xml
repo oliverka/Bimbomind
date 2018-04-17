@@ -9,7 +9,7 @@
                 android:shape="rectangle" >
                 <stroke android:color="@color/blue" android:width="0dp"/>
                 <solid
-                    android:color="@color/red" />
+                    android:color="#ffffffff" />
             </shape>
         </rotate>
     </item>

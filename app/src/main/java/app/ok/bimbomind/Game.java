@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.DragEvent;
@@ -35,14 +36,16 @@ public class Game extends Activity {
     private Drawable[] backgrounds;
     private Database database;
     private int rightPlace, rightColor;
+    private int shape;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_field);
         database = Database.getInstance();
-        final int field_code = 5; //database.getPreference(Database.PREFERENCE_SAVEGAME_COLORCOUNT);
-        final int rounds = 10; //database.getPreference(Database.PREFERENCE_SAVEGAME_MAXTURNS);
+        final int field_code = database.getPreference(Database.PREFERENCE_SAVEGAME_COLORCOUNT);
+        final int rounds = database.getPreference(Database.PREFERENCE_SAVEGAME_MAXTURNS);
+        shape = database.getPreference(Database.PREFERENCE_PINS_SHAPE);
         rgbs = database.getColorSettings();
         context = this;
         Button back = (Button) findViewById(R.id.game_field_back);
@@ -82,6 +85,7 @@ public class Game extends Activity {
                                     rightColor++;
                                     result[round][k].setBackgroundColor(Color.BLACK);
                                     k ++;
+                                    break;
                                 }
                             }
                         }
@@ -89,7 +93,15 @@ public class Game extends Activity {
                     System.err.println("Right place: " + rightPlace + " Right color: " + rightColor);
                     rightColor = 0;
                     rightPlace = 0;
-                    round++;
+                    round ++;
+                    if (round == rounds) {
+                        if (rightPlace == field_code) {
+                            //TODO: won game
+                        }
+                        else {
+                            //TODO: lost game
+                        }
+                    }
                 }
             }
         });
@@ -117,8 +129,10 @@ public class Game extends Activity {
             @Override
             public void onGlobalLayout() {
                 layout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                double field_width_1 = (layout.getWidth() / (field_code * 2 - 1)) * 0.66;
-                double field_width_2 = (layout.getWidth() / (field_code * 2 - 1)) * 0.33;
+                double border_left = getResources().getDimension(R.dimen.marginLeft)/layout.getWidth();
+                double field_width_1 = (layout.getWidth() / (field_code * 2 - 1)) * (0.6);
+                double field_width_2 = (layout.getWidth() / (field_code * 2 - 1)) * (0.3);
+                System.err.println(border_left);
                 double field_height = (color_picker.getHeight());
                 for (int i = 0; i < rows.length; i ++) {
                     LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(layout.getWidth(), (int) field_height);
@@ -128,6 +142,20 @@ public class Game extends Activity {
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) field_width_1, (int) (field_game.getHeight() * 0.66));
                         firstrow[i][j] = new Button(context);
                         firstrow[i][j].setX((float) (field_width_1 * j));
+                        switch (shape) {
+                            case 0:
+                                firstrow[i][j].setBackgroundResource(R.drawable.triangle);
+                                break;
+                            case 1:
+                                firstrow[i][j].setBackgroundResource(R.drawable.circle);
+                                break;
+                            case 2:
+                                firstrow[i][j].setBackgroundResource(R.drawable.rhombus);
+                                break;
+                            default:
+                                firstrow[i][j].setBackgroundResource(R.drawable.square);
+                                break;
+                        }
                         rows[i].addView(firstrow[i][j], params);
                     }
                     layout.addView(rows[i],params1);
@@ -137,7 +165,6 @@ public class Game extends Activity {
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) field_width_2, (int) (field_game.getHeight() * 0.66));
                         result[i][j] = new Button(context);
                         result[i][j].setX((float) (field_width_2 * j) + (float) (field_width_1 * field_code));
-                        result[i][j].setText("test");
                         rows[i].addView(result[i][j], params);
                     }
                 }
@@ -156,7 +183,20 @@ public class Game extends Activity {
                     field_code_pins[i].setX((float) (field_width * i));
                     field_code_pins[i].setMinimumWidth((int) field_width);
                     field_code_pins[i].setMinimumHeight((int) (field_game.getHeight() * 0.66));
-                    field_code_pins[i].setBackgroundColor(Color.GRAY);
+                    switch (shape) {
+                        case 0:
+                            field_code_pins[i].setBackgroundResource(R.drawable.triangle);
+                            break;
+                        case 1:
+                            field_code_pins[i].setBackgroundResource(R.drawable.circle);
+                            break;
+                        case 2:
+                            field_code_pins[i].setBackgroundResource(R.drawable.rhombus);
+                            break;
+                        default:
+                            field_code_pins[i].setBackgroundResource(R.drawable.square);
+                            break;
+                    }
                     field_game.addView(field_code_pins[i]);
                 }
             }
@@ -183,7 +223,23 @@ public class Game extends Activity {
                             double1 = j;
                     }
                     if (double1 == -1) {
-                        field_color_picker[i].setBackgroundColor(Color.rgb(rgbs[i][0], rgbs[i][1], rgbs[i][2]));
+                        Drawable mDrawable;
+                        switch (shape) {
+                            case 0:
+                                mDrawable = context.getResources().getDrawable(R.drawable.triangle);
+                                break;
+                            case 1:
+                                mDrawable = context.getResources().getDrawable(R.drawable.circle);
+                                break;
+                            case 2:
+                                mDrawable = context.getResources().getDrawable(R.drawable.rhombus);
+                                break;
+                            default:
+                                mDrawable = context.getResources().getDrawable(R.drawable.square);
+                                break;
+                        }
+                        mDrawable.setColorFilter(Color.parseColor("#ff" + Integer.toString(rgbs[i][0], 16) + Integer.toString(rgbs[i][1], 16) + Integer.toString(rgbs[i][2], 16)), PorterDuff.Mode.MULTIPLY);
+                        field_color_picker[i].setBackground(mDrawable);
                         backgrounds[i] = field_color_picker[i].getBackground();
                     }
                     else {
