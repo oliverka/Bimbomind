@@ -51,7 +51,6 @@ public class SettingsBackground extends Activity {
         setContentView(R.layout.background_settings);
         rgbs = new int[3];
         Button[] given_color = new Button[5];
-        //database = new Database(this, null, null, 1);
         database = Database.getInstance();
         context = this;
         slider_color = (Button) findViewById(R.id.background_settings_slider_color);
@@ -79,12 +78,28 @@ public class SettingsBackground extends Activity {
         image = (RadioButton) findViewById(R.id.background_settings_image);
         save = (Button) findViewById(R.id.background_settings_save);
 
+        /*
+        protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+            if (requestCode == 0 && resultCode == RESULT_OK && data != null) {
+                Uri selectedImage = data.getData();
+                try {
+                    Bitmap bitmapImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                    database.setPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_IMAGEPATH, selectedImage.getPath());
+                    image_preview.setImageBitmap(bitmapImage);
+                    System.err.println("Path: " + selectedImage.getPath());
+                } catch (IOException e) {}
+            }
+        }
+        */
+
         String pathName = database.getPreferenceString(Database.PREFERENCE_SETTINGS_BACKGROUND_IMAGEPATH);
         if (pathName != null && !pathName.equals("")) {
             File f = new File(pathName);
             System.err.println("Pathname: " + pathName);
+            System.err.println(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + pathName);
             if (f.exists()) {
-                Bitmap bitmap = BitmapFactory.decodeFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/" + pathName);
+                Bitmap bitmap = BitmapFactory.decodeFile(pathName);
                 image_preview.setImageBitmap(bitmap);
             }
         }

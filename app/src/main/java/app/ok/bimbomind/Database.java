@@ -119,14 +119,18 @@ public class Database extends SQLiteOpenHelper {
             values.put("PIN" + i, sg.getCode().getCode()[i - 1].getID());
         }
         db.insert(TABLE_SAVE, null, values);
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 8; i++) {
             values = new ContentValues();
             for (int j = 1; j < 9; j++) {
-                values.put("PIN" + i, sg.getCode().getCode()[i - 1].getID());
+                values.put("PIN" + j, sg.getCode().getCode()[j-1].getID());
             }
             db.insert(TABLE_SAVE, null, values);
         }
         db.close();
+    }
+
+    public void resetSaveGame(){
+        saveGame(new SaveGame(null, new Code(new Pin[]{}), 10, 5, 5, true, true));
     }
 
     public SaveGame loadGame() {
