@@ -119,7 +119,12 @@ public class Database extends SQLiteOpenHelper {
             values.put("PIN" + i, sg.getCode().getCode()[i - 1].getID());
         }
         db.insert(TABLE_SAVE, null, values);
-        for (int i = 0; i < sg.getTurns().length; i++) {
+        int k;
+        if (sg.getTurns() == null)
+            k = 0;
+        else
+            k = sg.getTurns().length;
+        for (int i = 0; i < k; i++) {
             values = new ContentValues();
             for (int j = 1; j < sg.getHoles()+1; j++) {
                 values.put("PIN" + j, sg.getTurns()[i].getCode()[j-1].getID());

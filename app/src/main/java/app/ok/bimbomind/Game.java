@@ -53,6 +53,7 @@ public class Game extends Activity {
         saveGame = database.loadGame();
         code = saveGame.getCode().getCode();
         firstrow_code = saveGame.getTurns();
+        round = saveGame.getTurns().length;
         final int field_code = saveGame.getColorCount();
         final int rounds = saveGame.getMaxTurns();
         final int holes = saveGame.getHoles();
@@ -107,7 +108,7 @@ public class Game extends Activity {
                     round ++;
                     //System.err.println("Round: " + round + " Rounds: " + rounds + " Fieldcode: " + field_code);
                     if (rightPlace == holes) {
-                        WonDialog cdd = new WonDialog(Game.this, context, round, 0);
+                        WonDialog cdd = new WonDialog(Game.this, context, round, holes);
                         cdd.show();
                     }
                     else if (round == rounds) {
@@ -138,7 +139,8 @@ public class Game extends Activity {
         backgrounds_firstrow = new Drawable[rounds][field_code];
         for (int i = 0; i < round; i ++) {
             for (int j = 0; j < field_code; j++) {
-                backgrounds_firstrow[i][j] = backgrounds[firstrow_code[i].getCode()[j].getID()];
+                if (firstrow_code[i] != null)
+                    backgrounds_firstrow[i][j] = backgrounds[firstrow_code[i].getCode()[j].getID()];
             }
         }
         ViewTreeObserver vto = layout.getViewTreeObserver();
@@ -288,25 +290,9 @@ public class Game extends Activity {
         super.onBackPressed();
         Intent intent = new Intent(this, MainMenu.class);
         startActivity(intent);
-        SaveGame saveGame1 = new SaveGame(saveTurns(),saveCode(), saveGame.getMaxTurns(), saveGame.getColorCount(), saveGame.getHoles(), saveGame.allowEmpty(), saveGame.allowMultiple());
+        SaveGame saveGame1 = new SaveGame(saveTurns(),saveGame.getCode(), saveGame.getMaxTurns(), saveGame.getColorCount(), saveGame.getHoles(), saveGame.allowEmpty(), saveGame.allowMultiple());
         database.saveGame(saveGame1);
         finish();
-    }
-
-    private Code saveCode() {
-        Pin[] colors = new Pin[saveGame.getColorCount()];
-        for (int i = 0; i < saveGame.getHoles(); i++) {
-            colors[i] = new Pin(-1, -1, -1, -1);
-        }
-        for (int i = 0; i < saveGame.getHoles(); i++) {
-            for (int j = 0; j < saveGame.getColorCount(); j++) {
-                if (field_code_pins[i].getBackground() == code_drawable[j]) {
-                    colors[i] = database.getPin(j + 1);
-                    break;
-                }
-            }
-        }
-        return new Code(colors);
     }
     private Code[] saveTurns() {
         Code[] code = new Code[round];
@@ -314,8 +300,8 @@ public class Game extends Activity {
             Pin[] colors = new Pin[saveGame.getHoles()];
             for (int i = 0; i < saveGame.getHoles(); i++) {
                 for (int j = 0; j < saveGame.getColorCount(); j++) {
-                    if (backgrounds[i] == backgrounds_firstrow[i][j]) {
-                        colors[l] = database.getPin(j + 1);
+                    if (backgrounds[j] == backgrounds_firstrow[l][i]) {
+                        colors[i] = database.getPin(j + 1);
                         break;
                     }
                 }
