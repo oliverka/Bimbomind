@@ -89,15 +89,15 @@ public class Code {
 
     //gibt den code an der konsole aus
     public void printCode() {
-        System.out.print("Code: ");
+        System.err.print("Code: ");
         for(int i = 0; i<code.length; i++) {
-            System.out.print(code[i].toString() + " ");
+            System.err.print(code[i].toString() + " ");
         }
-        System.out.println();
+        System.err.println();
     }
 
     //bestimmt, ob leere Stellen vorkommen
-    private boolean containsEmpty() {
+    public boolean containsEmpty() {
         for(int i = 0; i<code.length; i++) {
             if(code[i].isEmpty()) {
                 return true;
@@ -107,7 +107,7 @@ public class Code {
     }
 
     //bestimmt, ob ein Pin mehrfach vorkommt
-    private boolean containsMultiple() {
+    public boolean containsMultiple() {
         for(int i = 0; i<code.length-1; i++) {
             for(int j = i+1; j<code.length; j++) {
                 if(code[i].equals(code[j])) {
