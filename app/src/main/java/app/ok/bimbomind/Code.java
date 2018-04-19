@@ -21,6 +21,11 @@ public class Code {
         generateCode(numberOfHoles, numberOfPins,  allowEmpty, allowMultiple);
     }
 
+    public Code(){
+        this(new Pin[]{new Pin(-1, -1, -1, -1), new Pin(-1, -1, -1, -1), new Pin(-1, -1, -1, -1), new Pin(-1, -1, -1, -1),
+        new Pin(-1, -1, -1, -1), new Pin(-1, -1, -1, -1), new Pin(-1, -1, -1, -1), new Pin(-1, -1, -1, -1)});
+    }
+
     public Code(Pin[] code){
         this.code = code;
     }

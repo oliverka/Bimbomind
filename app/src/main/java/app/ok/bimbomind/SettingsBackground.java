@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 
 /**
  * Created by o.k on 15.03.2018.
@@ -277,6 +278,8 @@ public class SettingsBackground extends Activity {
             try {
                 Bitmap bitmapImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
                 database.setPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_IMAGEPATH, selectedImage.getPath());
+                File image = new File(selectedImage.getPath());
+                        if(image.exists()) System.err.println("File Exists");
                 image_preview.setImageBitmap(bitmapImage);
                 System.err.println("Path: " + selectedImage.getPath());
             } catch (IOException e) {}

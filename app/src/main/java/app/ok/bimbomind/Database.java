@@ -122,7 +122,7 @@ public class Database extends SQLiteOpenHelper {
         for (int i = 0; i < 8; i++) {
             values = new ContentValues();
             for (int j = 1; j < 9; j++) {
-                values.put("PIN" + j, sg.getCode().getCode()[j-1].getID());
+                values.put("PIN" + j, sg.getTurns()[i].getCode()[j-1].getID());
             }
             db.insert(TABLE_SAVE, null, values);
         }
@@ -130,18 +130,18 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public void resetSaveGame(){
-        saveGame(new SaveGame(null, new Code(new Pin[]{}), 10, 5, 5, true, true));
+        saveGame(new SaveGame(new Code[] {new Code(), new Code(), new Code(), new Code(), new Code(), new Code(), new Code(), new Code()}, new Code(), 10, 5, 5, true, true));
     }
 
     public SaveGame loadGame() {
-        Entry_Turn[] turns;
+        Code[] turns;
         int colors, holes, maxTurns;
         Code c = null;
         boolean allowMultiple, allowEmpty;
 
         colors = getPreference(PREFERENCE_SAVEGAME_COLORCOUNT);
         maxTurns = getPreference(PREFERENCE_SAVEGAME_MAXTURNS);
-        turns = new Entry_Turn[maxTurns];
+        turns = new Code[maxTurns];
         holes = getPreference(PREFERENCE_SAVEGAME_HOLES);
         allowMultiple = getPreferenceBoolean(PREFERENCE_SAVEGAME_ALLOWMULTIPLE);
         allowEmpty = getPreferenceBoolean(PREFERENCE_SAVEGAME_ALLOWEMPTY);
@@ -159,7 +159,7 @@ public class Database extends SQLiteOpenHelper {
                 c = new Code(turnPins);
             }
             else{
-                turns[i-1] = new Entry_Turn(new Code(turnPins), false);
+                turns[i-1] = new Code(turnPins);
             }
             cu.moveToNext();
         }
