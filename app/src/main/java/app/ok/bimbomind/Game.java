@@ -22,13 +22,13 @@ import android.widget.TextView;
 
 public class Game extends Activity {
 
+    private LinearLayout big_layout;
     private LinearLayout field_game;
     private LinearLayout color_picker;
     private LinearLayout[] field_code_pins;
     private TextView[] field_color_picker;
     private LinearLayout layout;
     private Context context;
-    private Button set;
     private Button[][] firstrow;
     private Button[][] result;
     private int round;
@@ -52,7 +52,8 @@ public class Game extends Activity {
         layout = (LinearLayout) findViewById(R.id.game_field_field);
         field_game = (LinearLayout) findViewById(R.id.game_field_code);
         color_picker = (LinearLayout) findViewById(R.id.game_field_color_picker);
-        set = (Button) findViewById(R.id.game_field_set);
+        big_layout = (LinearLayout) findViewById(R.id.game_field_layout);
+        Button set = (Button) findViewById(R.id.game_field_set);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,17 +92,18 @@ public class Game extends Activity {
                         }
                     }
                     System.err.println("Right place: " + rightPlace + " Right color: " + rightColor);
+                    round ++;
+                    System.err.println("Round: " + round + " Rounds: " + rounds + " Fieldcode: " + field_code);
+                    if (rightPlace == field_code) {
+                        //TODO: won game
+                        WonDialog cdd = new WonDialog(Game.this);
+                        cdd.show();
+                    }
+                    else if (round == rounds) {
+                            //TODO: lost game
+                    }
                     rightColor = 0;
                     rightPlace = 0;
-                    round ++;
-                    if (round == rounds) {
-                        if (rightPlace == field_code) {
-                            //TODO: won game
-                        }
-                        else {
-                            //TODO: lost game
-                        }
-                    }
                 }
             }
         });
@@ -201,6 +203,13 @@ public class Game extends Activity {
                 }
             }
         });
+        if (database.getPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_USEIMAGE) == 0) {
+            String hex = String.format("#%02x%02x%02x", database.getPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_COLOR_R), database.getPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_COLOR_G), database.getPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_COLOR_B));
+            big_layout.setBackgroundColor(Color.parseColor(hex));
+        }
+        else {
+            //TODO set Image
+        }
     }
     private void setFieldColorPicker(final int field_code) {
         ViewTreeObserver vto = field_game.getViewTreeObserver();
@@ -238,7 +247,8 @@ public class Game extends Activity {
                                 mDrawable = context.getResources().getDrawable(R.drawable.square);
                                 break;
                         }
-                        mDrawable.setColorFilter(Color.parseColor("#ff" + Integer.toString(rgbs[i][0], 16) + Integer.toString(rgbs[i][1], 16) + Integer.toString(rgbs[i][2], 16)), PorterDuff.Mode.MULTIPLY);
+                        String hex = String.format("#%02x%02x%02x", rgbs[i][0], rgbs[i][1], rgbs[i][2]);
+                        mDrawable.setColorFilter(Color.parseColor(hex) , PorterDuff.Mode.MULTIPLY);
                         field_color_picker[i].setBackground(mDrawable);
                         backgrounds[i] = field_color_picker[i].getBackground();
                     }
