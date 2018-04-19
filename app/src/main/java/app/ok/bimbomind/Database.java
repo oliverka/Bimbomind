@@ -102,6 +102,7 @@ public class Database extends SQLiteOpenHelper {
                 + SAVE_PIN5 + " INT, " + SAVE_PIN6 + " INT, " + SAVE_PIN7 + " INT, " + SAVE_PIN8 + " INT)";
         try{
             db.execSQL(CREATE_TABLE);
+            updateColorSettings(DEFAULT_COLORS, db);
         }
         catch(SQLiteException e){ }
     }
@@ -283,17 +284,24 @@ public class Database extends SQLiteOpenHelper {
             return null;
     }
 
+    //public Entry_Highscore(int score, int usedturns, int colorcount, String name, String datum) {
     protected Entry_Highscore[] getAllScores(int colorcount) {
         Entry_Highscore[] eintraege;
-        String query = "SELECT * from " + TABLE_SCORE + " WHERE " + SCORE_COLUMN_COLORCOUNT + "=" + colorcount + " order by " + SCORE_COLUMN_SCORE + " desc";
+        String query = "SELECT * from " + TABLE_SCORE + " WHERE " + SCORE_COLUMN_COLORCOUNT + "=" + colorcount + " order by " + SCORE_COLUMN_SCORE + " asc";
 
         SQLiteDatabase db = getWritableDatabase();
 
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
+        int ID = cursor.getColumnIndex(SCORE_COLUMN_ID);
+        int name = cursor.getColumnIndex(SCORE_COLUMN_NAME);
+        int usedturns = cursor.getColumnIndex(SCORE_COLUMN_USEDTURNS);
+        int cc = cursor.getColumnIndex(SCORE_COLUMN_COLORCOUNT);
+        int date = cursor.getColumnIndex(SCORE_COLUMN_DATE);
+        int score = cursor.getColumnIndex(SCORE_COLUMN_SCORE);
         eintraege = new Entry_Highscore[cursor.getCount()];
         for (int i = 0; i < cursor.getCount(); i++) {
-            eintraege[i] = new Entry_Highscore(Integer.parseInt(cursor.getString(1)), cursor.getInt(2), cursor.getInt(3), cursor.getString(2), cursor.getString(3));
+            eintraege[i] = new Entry_Highscore(cursor.getInt(score), cursor.getInt(usedturns), cursor.getInt(cc), cursor.getString(name), String.valueOf(cursor.getInt(date)));
             cursor.moveToNext();
         }
         cursor.close();
@@ -303,7 +311,7 @@ public class Database extends SQLiteOpenHelper {
 
     protected Entry_Highscore[] getAllScores() {
         Entry_Highscore[] eintraege = new Entry_Highscore[numberOfData()];
-        String query = "SELECT * from " + TABLE_SCORE + " order by " + SCORE_COLUMN_SCORE + " desc";
+        String query = "SELECT * from " + TABLE_SCORE + " order by " + SCORE_COLUMN_SCORE + " asc";
 
         SQLiteDatabase db = getWritableDatabase();
 
