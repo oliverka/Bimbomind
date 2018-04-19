@@ -67,8 +67,6 @@ public class EnterCode extends Activity {
                 updateCode();
                 if(isValid()){
                     database.saveGame(generateSavegame());
-                    SaveGame test = database.loadGame();
-                    test.getCode().printCode();
                     Intent intent = new Intent(EnterCode.this, Game.class);
                     startActivity(intent);
                     finish();
@@ -93,9 +91,9 @@ public class EnterCode extends Activity {
         setFieldColorPicker(CodeLength);
     }
 
-    //    public SaveGame(Entry_Turn[] turnsMade, Code c, int maxTurns, int colorCount, int holes, boolean allowEmpty, boolean allowMultiple){
+    //    public SaveGame(Code[] turnsMade, Code c, int maxTurns, int colorCount, int holes, boolean allowEmpty, boolean allowMultiple){
     private SaveGame generateSavegame(){
-        return new SaveGame(new Code[0], code, database.getPreference(Database.PREFERENCE_SAVEGAME_MAXTURNS),
+        return new SaveGame(null, code, database.getPreference(Database.PREFERENCE_SAVEGAME_MAXTURNS),
                 ColorCount, CodeLength, database.getPreferenceBoolean(Database.PREFERENCE_SAVEGAME_ALLOWEMPTY), database.getPreferenceBoolean(Database.PREFERENCE_SAVEGAME_ALLOWMULTIPLE));
     }
 
