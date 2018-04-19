@@ -115,13 +115,13 @@ public class Database extends SQLiteOpenHelper {
         resetDatabase(TABLE_SAVE);
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        for (int i = 1; i < 9; i++) {
+        for (int i = 1; i < sg.getHoles()+1; i++) {
             values.put("PIN" + i, sg.getCode().getCode()[i - 1].getID());
         }
         db.insert(TABLE_SAVE, null, values);
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < sg.getMaxTurns()+1; i++) {
             values = new ContentValues();
-            for (int j = 1; j < 9; j++) {
+            for (int j = 1; j < sg.getHoles()+1; j++) {
                 values.put("PIN" + j, sg.getTurns()[i].getCode()[j-1].getID());
             }
             db.insert(TABLE_SAVE, null, values);
