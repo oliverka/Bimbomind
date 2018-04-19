@@ -66,6 +66,9 @@ public class WonDialog extends Dialog implements android.view.View.OnClickListen
                                 Entry_Highscore entry = new Entry_Highscore(rounds, rounds, number_of_holes, String.valueOf(input.getText()), String.valueOf(System.currentTimeMillis()));
                                 database.addScore(entry);
                                 Toast.makeText(context, context.getResources().getString(R.string.save_score), Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(c, MainMenu.class);
+                                c.startActivity(intent);
+                                c.finish();
                             }
                         })
                         .setNegativeButton(android.R.string.no, new OnClickListener() {
@@ -75,9 +78,6 @@ public class WonDialog extends Dialog implements android.view.View.OnClickListen
                         })
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
-                Intent intent = new Intent(c, MainMenu.class);
-                c.startActivity(intent);
-                c.finish();
                 break;
             case R.id.won_dialog_go_to_menu:
                 dismiss();

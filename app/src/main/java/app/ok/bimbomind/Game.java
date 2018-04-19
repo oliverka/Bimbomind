@@ -2,12 +2,15 @@ package app.ok.bimbomind;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.DragEvent;
 import android.view.MotionEvent;
@@ -53,7 +56,7 @@ public class Game extends Activity {
         saveGame = database.loadGame();
         code = saveGame.getCode().getCode();
         firstrow_code = saveGame.getTurns();
-        round = saveGame.getTurns().length;
+        round = 0;
         final int field_code = saveGame.getColorCount();
         final int rounds = saveGame.getMaxTurns();
         final int holes = saveGame.getHoles();
@@ -112,7 +115,28 @@ public class Game extends Activity {
                         cdd.show();
                     }
                     else if (round == rounds) {
-                            //TODO: lost game
+                        AlertDialog.Builder builder;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Dialog_Alert);
+                        } else {
+                            builder = new AlertDialog.Builder(context);
+                        }
+                        builder.setTitle(R.string.message)
+                                .setMessage(R.string.result_in_highscore)
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent intent = new Intent(Game.this, MainMenu.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                })
+                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                })
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .show();
                     }
                     rightPlace = 0;
                 }
@@ -137,12 +161,7 @@ public class Game extends Activity {
         firstrow = new Button[rounds][field_code];
         result = new Button[rounds][field_code];
         backgrounds_firstrow = new Drawable[rounds][field_code];
-        for (int i = 0; i < round; i ++) {
-            for (int j = 0; j < field_code; j++) {
-                if (firstrow_code[i] != null)
-                    backgrounds_firstrow[i][j] = backgrounds[firstrow_code[i].getCode()[j].getID()];
-            }
-        }
+
         ViewTreeObserver vto = layout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener (new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -156,7 +175,8 @@ public class Game extends Activity {
                     rows[i] = new LinearLayout(context);
                     rows[i].setOrientation(LinearLayout.HORIZONTAL);
                     for (int j = 0; j < field_code; j++) {
-                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) field_width_1, (int) (field_game.getHeight() * 0.66));
+                        //LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) field_width_1, (int) (field_game.getHeight() * 0.66));
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) field_width_1, (int) field_width_1);
                         firstrow[i][j] = new Button(context);
                         firstrow[i][j].setX((float) (field_width_1 * j));
                         if (i < backgrounds_firstrow.length)
@@ -281,6 +301,12 @@ public class Game extends Activity {
                 for (int i = 0; i < backgrounds.length; i ++) {
                     code_drawable[i] = backgrounds[code[i].getID() - 1];
                     System.err.println("ID: "+code[i].getID());
+                }
+                for (int i = 0; i < round; i ++) {
+                    for (int j = 0; j < field_code; j++) {
+                        if (firstrow_code[i] != null)
+                            backgrounds_firstrow[i][j] = backgrounds[firstrow_code[i].getCode()[j].getID()];
+                    }
                 }
             }
         });
