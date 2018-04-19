@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -35,12 +36,16 @@ public class EnterCode extends Activity {
     private Database database;
     private Code code;
 
+    private static int CodeLength;
+    private static int ColorCount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.set_code);
         database = Database.getInstance();
-        final int field_code = database.getPreference(Database.PREFERENCE_SAVEGAME_HOLES);
+        CodeLength = database.getPreference(Database.PREFERENCE_SAVEGAME_HOLES);
+        ColorCount = database.getPreference(Database.PREFERENCE_SAVEGAME_COLORCOUNT);
         rgbs = database.getColorSettings();
         context = this;
         Button back = (Button) findViewById(R.id.setcode_back);
@@ -71,8 +76,8 @@ public class EnterCode extends Activity {
                 }
             }
         });
-        field_color_picker = new TextView[field_code];
-        field_code_pins = new LinearLayout[field_code];
+        field_color_picker = new TextView[CodeLength];
+        field_code_pins = new LinearLayout[CodeLength];
         for (int i = 0; i < field_color_picker.length; i ++) {
             field_color_picker[i] = new TextView(context);
             field_code_pins[i] = new LinearLayout(context);
@@ -81,18 +86,18 @@ public class EnterCode extends Activity {
             field_color_picker[i].setOnTouchListener(new MyTouchListener());
             field_code_pins[i].setOnDragListener(new MyDragListener(i));
         }
-        setFieldGame(field_code);
-        setFieldColorPicker(field_code);
+        setFieldGame(CodeLength);
+        setFieldColorPicker(CodeLength);
     }
 
-    private void setFieldGame(final int field_code) {
+    private void setFieldGame(final int CodeLength) {
         ViewTreeObserver vto = layout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener (new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 layout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                double field_width = (layout.getWidth() / (field_code * 2 - 1));
-                for (int i = 0; i < field_code; i ++) {
+                double field_width = (layout.getWidth() / (CodeLength * 2 - 1));
+                for (int i = 0; i < CodeLength; i ++) {
                     field_code_pins[i].setX((float) (field_width * i));
                     field_code_pins[i].setMinimumWidth((int) field_width);
                     field_code_pins[i].setMinimumHeight((int) (layout.getHeight() * 0.66));
@@ -102,22 +107,22 @@ public class EnterCode extends Activity {
             }
         });
     }
-    private void setFieldColorPicker(final int field_code) {
+    private void setFieldColorPicker(final int CodeLength) {
         ViewTreeObserver vto = layout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener (new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 color_picker.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                double field_width = (layout.getWidth() / (field_code * 2 - 1));
-                for (int i = 0; i < field_code; i ++) {
+                double field_width = (layout.getWidth() / (CodeLength * 2 - 1));
+                for (int i = 0; i < CodeLength; i ++) {
                     field_color_picker[i].setX((float) (field_width * i));
                     field_color_picker[i].setMinimumWidth((int) field_width);
                     field_color_picker[i].setMinimumHeight((int) (layout.getHeight() * 0.66));
                     color_picker.addView(field_color_picker[i]);
                 }
-                backgrounds = new Drawable[field_code];
+                backgrounds = new Drawable[CodeLength];
                 int double1 = -1;
-                for (int i = 0; i < field_code; i++) {
+                for (int i = 0; i < CodeLength; i++) {
                     for (int j = 0; j < i; j++) {
                         if (rgbs[i][0] == rgbs[j][0] && rgbs[i][1] == rgbs[j][1] && rgbs[i][2] == rgbs[j][2] && i != j)
                             double1 = j;
@@ -157,13 +162,28 @@ public class EnterCode extends Activity {
     }
 
     public void updateCode(){
-        System.err.println(field_code_pins[0].getDrawingCacheBackgroundColor());
+        Pin[] Colors = new Pin[CodeLength];
+        for(int i = 0; i<CodeLength; i++){
+            Colors[i] = new Pin(-1, -1, -1, -1);
+        }
+        for(int i = 0; i<CodeLength; i++){
+            for(int j = 0; j<ColorCount; j++){
+                if(field_code_pins[i].getBackground() == backgrounds[j]) {
+                    Colors[i] = database.getPin(j+1);
+                    break;
+                }
+            }
+        }
+        code = new Code(Colors);
+        code.printCode();
     }
 
     public boolean isValid(){
-
-
-        return false;
+        if(code.containsEmpty() && !database.getPreferenceBoolean(database.PREFERENCE_SAVEGAME_ALLOWEMPTY)
+                || code.containsMultiple() && !database.getPreferenceBoolean(database.PREFERENCE_SAVEGAME_ALLOWMULTIPLE)){
+            return false;
+        }
+        return true;
     }
 
 

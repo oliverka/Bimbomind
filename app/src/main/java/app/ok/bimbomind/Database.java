@@ -170,6 +170,8 @@ public class Database extends SQLiteOpenHelper {
         String query = "SELECT * FROM " + TABLE_PINS + " WHERE " + SCORE_COLUMN_ID + "=" + id;
         Cursor c = db.rawQuery(query, null);
         c.moveToFirst();
+        System.err.println(c.getCount() + " " + c.getColumnCount());
+        if(c.getCount() < 1) return new Pin(-1, -1, -1, -1);
         Pin res = new Pin(id, c.getInt(1), c.getInt(2), c.getInt(3));
         c.close();
         db.close();
