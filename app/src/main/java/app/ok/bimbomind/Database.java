@@ -146,7 +146,6 @@ public class Database extends SQLiteOpenHelper {
 
         colors = getPreference(PREFERENCE_SAVEGAME_COLORCOUNT);
         maxTurns = getPreference(PREFERENCE_SAVEGAME_MAXTURNS);
-        turns = new Code[maxTurns];
         holes = getPreference(PREFERENCE_SAVEGAME_HOLES);
         allowMultiple = getPreferenceBoolean(PREFERENCE_SAVEGAME_ALLOWMULTIPLE);
         allowEmpty = getPreferenceBoolean(PREFERENCE_SAVEGAME_ALLOWEMPTY);
@@ -155,6 +154,7 @@ public class Database extends SQLiteOpenHelper {
         String query = "SELECT * FROM " + TABLE_SAVE + " ORDER BY " + SCORE_COLUMN_ID + " ASC";
         Cursor cu = db.rawQuery(query, null);
         cu.moveToFirst();
+        turns = new Code[cu.getCount()-1];
         for (int i = 0; i < cu.getCount() && i<maxTurns; i++) {
             Pin[] turnPins = new Pin[holes];
             for(int j = 0; j<holes; j++){
@@ -170,8 +170,8 @@ public class Database extends SQLiteOpenHelper {
         }
         cu.close();
         db.close();
-
-        return new SaveGame(turns, c, maxTurns, colors, holes, allowEmpty, allowMultiple);
+        SaveGame res = new SaveGame(turns, c, maxTurns, colors, holes, allowEmpty, allowMultiple);
+        return res;
     }
 
     public Pin getPin(int id){
