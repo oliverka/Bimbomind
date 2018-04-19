@@ -119,7 +119,7 @@ public class Database extends SQLiteOpenHelper {
             values.put("PIN" + i, sg.getCode().getCode()[i - 1].getID());
         }
         db.insert(TABLE_SAVE, null, values);
-        for (int i = 0; i < sg.getMaxTurns()+1; i++) {
+        for (int i = 0; i < sg.getTurns().length; i++) {
             values = new ContentValues();
             for (int j = 1; j < sg.getHoles()+1; j++) {
                 values.put("PIN" + j, sg.getTurns()[i].getCode()[j-1].getID());
@@ -153,7 +153,7 @@ public class Database extends SQLiteOpenHelper {
         for (int i = 0; i < cu.getCount() && i<maxTurns; i++) {
             Pin[] turnPins = new Pin[holes];
             for(int j = 0; j<holes; j++){
-                turnPins[j] = database.getPin(cu.getInt(i+1));
+                turnPins[j] = database.getPin(cu.getInt(j+1));
             }
             if(i == 0){
                 c = new Code(turnPins);
@@ -174,7 +174,6 @@ public class Database extends SQLiteOpenHelper {
         String query = "SELECT * FROM " + TABLE_PINS + " WHERE " + SCORE_COLUMN_ID + "=" + id;
         Cursor c = db.rawQuery(query, null);
         c.moveToFirst();
-        System.err.println(c.getCount() + " " + c.getColumnCount());
         if(c.getCount() < 1) return new Pin(-1, -1, -1, -1);
         Pin res = new Pin(id, c.getInt(1), c.getInt(2), c.getInt(3));
         c.close();

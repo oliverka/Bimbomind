@@ -67,6 +67,8 @@ public class EnterCode extends Activity {
                 updateCode();
                 if(isValid()){
                     database.saveGame(generateSavegame());
+                    SaveGame test = database.loadGame();
+                    test.getCode().printCode();
                     Intent intent = new Intent(EnterCode.this, Game.class);
                     startActivity(intent);
                     finish();
@@ -182,7 +184,6 @@ public class EnterCode extends Activity {
             }
         }
         code = new Code(Colors);
-        code.printCode();
     }
 
     public boolean isValid(){
