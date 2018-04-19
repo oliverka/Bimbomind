@@ -36,4 +36,8 @@
     <string name="score">Score</string>
     <string name="save">Save</string>
     <string name="saved_succesfully">Saved successfully</string>
+    <string name="go_to_menu">Go to Menu</string>
+    <string name="save_score">Save Score</string>
+    <string name="message">Message</string>
+    <string name="result_in_highscore">Are you sure you want to enter your result in the highscore?</string>
 </resources>
