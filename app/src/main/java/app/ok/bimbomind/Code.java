@@ -69,7 +69,7 @@ public class Code {
                         if(!allowMultiple && occurred[tmp+1] > 0) {
                         }
                         else {
-                            code[i] = db.getPin(i);
+                            code[i] = db.getPin(tmp);
                             occurred[tmp+1]++;
                             success = true;
                         }
@@ -80,7 +80,7 @@ public class Code {
                     if(!allowMultiple && occurred[tmp] > 0) {
                     }
                     else {
-                        code[i] = db.getPin(i);
+                        code[i] = db.getPin(tmp);
                         occurred[tmp]++;
                         success = true;
                     }
