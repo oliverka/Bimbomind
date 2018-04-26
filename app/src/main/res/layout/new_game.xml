@@ -147,35 +147,14 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
         <ToggleButton
             android:textOff="@string/ai"
             android:textOn="@string/human"
             android:layout_marginLeft="@dimen/marginLeft"
+            android:layout_marginRight="@dimen/marginRight"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/new_game_ai_human"
-            android:layout_weight="1" />
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".5" />
-
-        <ToggleButton
-            android:textOff="@string/set"
-            android:textOn="@string/guess"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/new_game_set_guess"
-            android:layout_weight="1" />
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:id="@+id/new_game_computer_human"
             android:layout_weight="1" />
     </LinearLayout>
 
