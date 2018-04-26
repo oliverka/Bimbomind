@@ -56,7 +56,7 @@ public class Game extends Activity {
         saveGame = database.loadGame();
         code = saveGame.getCode().getCode();
         firstrow_code = saveGame.getTurns();
-        round = 0;
+        round = saveGame.getTurns().length;
         final int field_code = saveGame.getColorCount();
         final int rounds = saveGame.getMaxTurns();
         final int holes = saveGame.getHoles();
@@ -299,8 +299,15 @@ public class Game extends Activity {
                     double1 = -1;
                 }
                 for (int i = 0; i < backgrounds.length; i ++) {
-                    code_drawable[i] = backgrounds[code[i].getID() - 1];
-                    System.err.println("ID: "+code[i].getID());
+                    if (code[i].getID() == -1) {
+                        code_drawable[i] = backgrounds[code[i].getID()];
+                    }
+                    else {
+                        int alpha = backgrounds[0].getAlpha();
+                        backgrounds[0].setAlpha(100);
+                        code_drawable[i] = backgrounds[0];
+                        backgrounds[0].setAlpha(alpha);
+                    }
                 }
                 for (int i = 0; i < round; i ++) {
                     for (int j = 0; j < field_code; j++) {

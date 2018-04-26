@@ -25,7 +25,6 @@ public class NewGame extends Activity {
     private EditText turns;
     private EditText colors;
     private EditText holes;
-    private ToggleButton ai_human;
     private ToggleButton set_guess;
     private TextView error_text;
 
@@ -33,7 +32,6 @@ public class NewGame extends Activity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_game);
-        //database = new Database(this,null,null, 1);
         database = Database.getInstance();
         Button new_game = (Button) findViewById(R.id.new_game_start_game);
         Button abort = (Button) findViewById(R.id.new_game_abort);
@@ -42,8 +40,7 @@ public class NewGame extends Activity {
         turns = (EditText) findViewById(R.id.new_game_turns_input);
         colors = (EditText) findViewById(R.id.new_game_colors_input);
         holes = (EditText) findViewById(R.id.new_game_holes_input);
-        ai_human = (ToggleButton) findViewById(R.id.new_game_ai_human);
-        set_guess = (ToggleButton) findViewById(R.id.new_game_set_guess);
+        set_guess = (ToggleButton) findViewById(R.id.new_game_computer_human);
         error_text = (TextView) findViewById(R.id.new_game_error_text);
         new_game.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,7 +118,6 @@ public class NewGame extends Activity {
                 database.setPreference(Database.PREFERENCE_SAVEGAME_MAXTURNS, Integer.parseInt(String.valueOf(turns.getText())));
                 database.setPreference(Database.PREFERENCE_SAVEGAME_COLORCOUNT, Integer.parseInt(String.valueOf(colors.getText())));
                 database.setPreference(Database.PREFERENCE_SAVEGAME_HOLES, Integer.parseInt(String.valueOf(holes.getText())));
-                database.setPreference(Database.PREFERENCE_SAVEGAME_AI, ai_human.isChecked());
                 database.setPreference(Database.PREFERENCE_SAVEGAME_SET, set_guess.isChecked());
                 return true;
             }

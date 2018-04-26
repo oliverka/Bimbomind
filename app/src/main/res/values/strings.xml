@@ -19,8 +19,8 @@
     <string name="allow_empty">Allow Empty</string>
     <string name="allow_multiple">Allow Multiple</string>
     <string name="turns">Turns</string>
-    <string name="ai">AI</string>
-    <string name="set">Set</string>
+    <string name="ai">vs AI</string>
+    <string name="set">vs your friend</string>
     <string name="abort">abort</string>
     <string name="code">Code</string>
     <string name="color_picker">Color Picker</string>
