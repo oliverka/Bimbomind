@@ -153,7 +153,7 @@ public class Game extends Activity {
         }
         setFieldGame(holes);
         setFieldColorPicker(field_code);
-        init(holes, rounds);
+        init(holes,rounds);
     }
 
     private void init(final int field_code, final int rounds) {
@@ -179,8 +179,7 @@ public class Game extends Activity {
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) field_width_1, (int) field_width_1);
                         firstrow[i][j] = new Button(context);
                         firstrow[i][j].setX((float) (field_width_1 * j));
-                        if (i < backgrounds_firstrow.length)
-                            firstrow[i][j].setBackground(backgrounds_firstrow[i][j]);
+
                         switch (shape) {
                             case 0:
                                 firstrow[i][j].setBackgroundResource(R.drawable.triangle);
@@ -194,6 +193,9 @@ public class Game extends Activity {
                             default:
                                 firstrow[i][j].setBackgroundResource(R.drawable.square);
                                 break;
+                        }
+                        if (i < backgrounds_firstrow.length) {
+                            //firstrow[i][j].setBackground(backgrounds_firstrow[i][j]);
                         }
                         rows[i].addView(firstrow[i][j], params);
                     }
@@ -313,6 +315,24 @@ public class Game extends Activity {
                     for (int j = 0; j < field_code; j++) {
                         if (firstrow_code[i] != null)
                             backgrounds_firstrow[i][j] = backgrounds[firstrow_code[i].getCode()[j].getID()];
+                        switch (shape) {
+                            case 0:
+                                //firstrow[i][j].setBackgroundResource(R.drawable.triangle);
+                                firstrow[i][j].setBackground(backgrounds_firstrow[i][j]);
+                                break;
+                            case 1:
+                                firstrow[i][j].setBackgroundResource(R.drawable.circle);
+                                break;
+                            case 2:
+                                firstrow[i][j].setBackgroundResource(R.drawable.rhombus);
+                                break;
+                            default:
+                                firstrow[i][j].setBackgroundResource(R.drawable.square);
+                                break;
+                        }
+                        if (i < backgrounds_firstrow.length) {
+                            //firstrow[i][j].setBackground(backgrounds_firstrow[i][j]);
+                        }
                     }
                 }
             }
