@@ -313,8 +313,11 @@ public class Game extends Activity {
                 }
                 for (int i = 0; i < round; i ++) {
                     for (int j = 0; j < field_code; j++) {
-                        if (firstrow_code[i] != null)
-                            backgrounds_firstrow[i][j] = backgrounds[firstrow_code[i].getCode()[j].getID()];
+                        System.err.println("Id: "+  firstrow_code[i].getCode()[j].getID());
+                        if (firstrow_code[i] != null && firstrow_code[i].getCode()[j].getID() != -1)
+                            backgrounds_firstrow[i][j] = backgrounds[firstrow_code[i].getCode()[j].getID() - 1];
+                        else
+                            backgrounds_firstrow[i][j] = backgrounds[0];
                         switch (shape) {
                             case 0:
                                 //firstrow[i][j].setBackgroundResource(R.drawable.triangle);
@@ -345,6 +348,7 @@ public class Game extends Activity {
         startActivity(intent);
         SaveGame saveGame1 = new SaveGame(saveTurns(),saveGame.getCode(), saveGame.getMaxTurns(), saveGame.getColorCount(), saveGame.getHoles(), saveGame.allowEmpty(), saveGame.allowMultiple());
         database.saveGame(saveGame1);
+        SaveGame saveGame2 = database.loadGame();
         finish();
     }
     private Code[] saveTurns() {
@@ -356,6 +360,9 @@ public class Game extends Activity {
                     if (backgrounds[j] == backgrounds_firstrow[l][i]) {
                         colors[i] = database.getPin(j + 1);
                         break;
+                    }
+                    else {
+                        colors[i] = new Pin(-1,0,0,0);
                     }
                 }
             }
