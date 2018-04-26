@@ -40,6 +40,7 @@ public class WonDialog extends Dialog implements android.view.View.OnClickListen
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.won_dialog);
+        setCancelable(false);
         save_in_highscore = (Button) findViewById(R.id.won_dialog_save_in_highscore);
         go_to_menu = (Button) findViewById(R.id.won_dialog_go_to_menu);
         input = (EditText) findViewById(R.id.won_dialog_input);
@@ -71,6 +72,7 @@ public class WonDialog extends Dialog implements android.view.View.OnClickListen
                                 c.finish();
                             }
                         })
+                        .setCancelable(false)
                         .setNegativeButton(android.R.string.no, new OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
 

@@ -122,19 +122,16 @@ public class Game extends Activity {
                             builder = new AlertDialog.Builder(context);
                         }
                         builder.setTitle(R.string.message)
-                                .setMessage(R.string.result_in_highscore)
+                                .setMessage("Unfortunately you lost the game! You will redirect to the main menu")
                                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
+                                        database.resetDatabase("Savegame");
                                         Intent intent = new Intent(Game.this, MainMenu.class);
                                         startActivity(intent);
                                         finish();
                                     }
                                 })
-                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-
-                                    }
-                                })
+                                .setCancelable(false)
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .show();
                     }
@@ -313,7 +310,6 @@ public class Game extends Activity {
                 }
                 for (int i = 0; i < round; i ++) {
                     for (int j = 0; j < field_code; j++) {
-                        System.err.println("Id: "+  firstrow_code[i].getCode()[j].getID());
                         if (firstrow_code[i] != null && firstrow_code[i].getCode()[j].getID() != -1)
                             backgrounds_firstrow[i][j] = backgrounds[firstrow_code[i].getCode()[j].getID() - 1];
                         else
@@ -325,16 +321,36 @@ public class Game extends Activity {
                                 break;
                             case 1:
                                 firstrow[i][j].setBackgroundResource(R.drawable.circle);
+                                firstrow[i][j].setBackground(backgrounds_firstrow[i][j]);
                                 break;
                             case 2:
                                 firstrow[i][j].setBackgroundResource(R.drawable.rhombus);
+                                firstrow[i][j].setBackground(backgrounds_firstrow[i][j]);
                                 break;
                             default:
                                 firstrow[i][j].setBackgroundResource(R.drawable.square);
+                                firstrow[i][j].setBackground(backgrounds_firstrow[i][j]);
                                 break;
                         }
-                        if (i < backgrounds_firstrow.length) {
-                            //firstrow[i][j].setBackground(backgrounds_firstrow[i][j]);
+                    }
+                    int m = 0;
+                    int[] already_right_place = new int[firstrow[i].length];
+                    for (int k = 0; k < firstrow[i].length; k++) {
+                        if (backgrounds_firstrow[i][k] == code_drawable[k]) {
+                            result[i][m].setBackgroundColor(Color.RED);
+                            already_right_place[k] = 1;
+                            m ++;
+                        }
+                    }
+                    for (int k = 0; k < firstrow[i].length; k++) {
+                        if (already_right_place[k] == 0) {
+                            for (int j = 0; j < firstrow[i].length; j++) {
+                                if (code_drawable[k] == backgrounds_firstrow[i][j]) {
+                                    result[i][m].setBackgroundColor(Color.BLACK);
+                                    m ++;
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
@@ -362,7 +378,7 @@ public class Game extends Activity {
                         break;
                     }
                     else {
-                        colors[i] = new Pin(-1,0,0,0);
+                        colors[i] = new Pin(-1,255,255,255);
                     }
                 }
             }
