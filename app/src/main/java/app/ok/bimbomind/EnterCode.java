@@ -176,7 +176,7 @@ public class EnterCode extends Activity {
         for(int i = 0; i<CodeLength; i++){
             for(int j = 0; j<ColorCount; j++){
                 if(field_code_pins[i].getBackground() == backgrounds[j]) {
-                    Colors[i] = database.getPin(j+1);
+                    Colors[i] = database.getPin(j);
                     break;
                 }
             }

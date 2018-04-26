@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -50,6 +51,14 @@ public class NewGame extends Activity {
                 if (saveStats()) {
                     Intent intent;
                     if(set_guess.isChecked()){
+                        //public Code(int numberOfHoles, int numberOfPins, boolean allowEmpty, boolean allowMultiple)
+                        int sg_holes = database.getPreference(Database.PREFERENCE_SAVEGAME_HOLES);
+                        int sg_pins = database.getPreference(Database.PREFERENCE_SAVEGAME_COLORCOUNT);
+                        boolean sg_ae = database.getPreferenceBoolean(Database.PREFERENCE_SAVEGAME_ALLOWEMPTY);
+                        boolean sg_am = database.getPreferenceBoolean(Database.PREFERENCE_SAVEGAME_ALLOWMULTIPLE);
+                        int sg_turns = database.getPreference(Database.PREFERENCE_SAVEGAME_MAXTURNS);
+                        Code c = new Code(sg_holes, sg_pins, sg_ae, sg_am);
+                        database.saveGame(new SaveGame(new Code[0], c, sg_turns, sg_pins, sg_holes, sg_ae, sg_am));
                         intent = new Intent(NewGame.this, Game.class);
                     }
                     else{
