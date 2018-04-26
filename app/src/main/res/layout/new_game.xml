@@ -35,7 +35,7 @@
         android:layout_weight="1">
         <TextView
             android:text="@string/turns"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/marginLeft"
             android:layout_weight=".5" />
@@ -46,13 +46,12 @@
             android:layout_weight=".5" />
 
         <EditText
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
             android:hint="@string/number_of_turns"
             android:ems="10"
             android:id="@+id/new_game_turns_input"
-            android:paddingVertical="@dimen/paddingVertical"
             android:layout_weight="1" />
 
         <Space
@@ -74,7 +73,7 @@
 
         <TextView
             android:text="@string/colors"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_marginLeft="@dimen/marginLeft"
             android:layout_height="wrap_content"
             android:layout_weight=".5" />
@@ -85,12 +84,11 @@
             android:layout_weight=".5" />
 
         <EditText
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
             android:hint="@string/number_of_colors"
             android:ems="10"
-            android:paddingVertical="@dimen/paddingVertical"
             android:id="@+id/new_game_colors_input"
             android:layout_weight="1" />
 
@@ -114,7 +112,7 @@
         <TextView
             android:text="@string/holes"
             android:layout_marginLeft="@dimen/marginLeft"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView2"
             android:layout_weight=".5" />
@@ -125,11 +123,10 @@
             android:layout_weight=".5" />
 
         <EditText
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
             android:hint="@string/number_of_holes"
-            android:paddingVertical="@dimen/paddingVertical"
             android:ems="10"
             android:id="@+id/new_game_holes_input"
             android:layout_weight="1" />
@@ -157,7 +154,6 @@
             android:layout_marginRight="@dimen/marginRight"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingVertical="@dimen/paddingVertical"
             android:id="@+id/new_game_computer_human"
             android:layout_weight="1" />
     </LinearLayout>
@@ -168,7 +164,7 @@
         android:layout_marginRight="@dimen/marginRight"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="5" />
+        android:layout_weight=".5" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -187,7 +183,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/new_game_abort"
             android:layout_gravity="bottom"
-            android:paddingVertical="@dimen/paddingVertical"
             android:layout_weight="1" />
 
         <Space
@@ -201,7 +196,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/new_game_start_game"
             android:layout_gravity="bottom"
-            android:paddingVertical="@dimen/paddingVertical"
             android:layout_weight="1" />
 
         <Space
