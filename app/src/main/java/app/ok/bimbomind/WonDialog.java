@@ -64,6 +64,7 @@ public class WonDialog extends Dialog implements android.view.View.OnClickListen
                         .setMessage(R.string.result_in_highscore)
                         .setPositiveButton(android.R.string.yes, new OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                database.resetDatabase("Savegame");
                                 Entry_Highscore entry = new Entry_Highscore(rounds, rounds, number_of_holes, String.valueOf(input.getText()), String.valueOf(System.currentTimeMillis()));
                                 database.addScore(entry);
                                 Toast.makeText(context, context.getResources().getString(R.string.save_score), Toast.LENGTH_SHORT).show();
@@ -75,7 +76,10 @@ public class WonDialog extends Dialog implements android.view.View.OnClickListen
                         .setCancelable(false)
                         .setNegativeButton(android.R.string.no, new OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-
+                                database.resetDatabase("Savegame");
+                                Intent intent = new Intent(c, MainMenu.class);
+                                c.startActivity(intent);
+                                c.finish();
                             }
                         })
                         .setIcon(android.R.drawable.ic_dialog_alert)
