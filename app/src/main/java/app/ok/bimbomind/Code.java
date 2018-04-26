@@ -8,33 +8,37 @@ import java.util.Random;
 
 public class Code {
 
-    //enthält den zu lösenden Code
+    //enthält den zu lösenden Code, wird auch zur Speicherung von geratenen Kombinationen verwendet
     private Pin[] code;
 
-    //Konstruktor zur verwendung als Code-Generator. setzt alle notwendigen parameter
+    //Konstruktor zur verwendung als Code-Generator. setzt alle notwendigen parameter und generiert einen neuen Code
     public Code(int numberOfHoles, int numberOfPins, boolean allowEmpty, boolean allowMultiple) {
         code = new Pin[numberOfHoles];
-        //initialisiere Code
+        //initialisiere Code mit leeren Pins
         for(int i=0;i<code.length;i++) {
             code[i] = new Pin(-1, 0, 0, 0);
         }
+        //generiert Code entsprechend der übergebenen Parameter
         generateCode(numberOfHoles, numberOfPins,  allowEmpty, allowMultiple);
     }
 
+    //do not use unless you know what you are doing!
     public Code(){
+        //initialisiert mit invaliden Werten
         this(new Pin[]{new Pin(-1, -1, -1, -1), new Pin(-1, -1, -1, -1), new Pin(-1, -1, -1, -1), new Pin(-1, -1, -1, -1),
         new Pin(-1, -1, -1, -1), new Pin(-1, -1, -1, -1), new Pin(-1, -1, -1, -1), new Pin(-1, -1, -1, -1)});
     }
 
+    //Konstruktor anhand eines Pin-Arrays. nicht zur verwendung als Code-generator nutzen.
     public Code(Pin[] code){
         this.code = code;
     }
 
     public boolean generateCode(int numberOfHoles, int numberOfPins, boolean allowEmpty, boolean allowMultiple) {
-        if(numberOfHoles > numberOfPins && !allowMultiple) { //Mehr Löcher angegeben als mit den gegebenen Parametern gefüllt werden können
+        //Mehr Löcher angegeben als mit den gegebenen Parametern gefüllt werden können
+        if(numberOfHoles > numberOfPins && !allowMultiple) {
             return false;
         }
-
         Random r = new Random();
 
         int range = numberOfPins;
@@ -42,12 +46,15 @@ public class Code {
         int[] occurred = new int[range]; //Speichert bereits aufgetretene Pins
 
         Database db = Database.getInstance();
+        //iterative Code generierung
         for(int i = 0; i<numberOfHoles; i++) {
             boolean success = false;
+            //generiere so lange zufällig Pins, bis ein valider gefunden wurde.
             while(!success) {
                 int tmp;
                 success = false;
                 if(allowEmpty) {
+                //Generiere auch leere Pins
                     tmp = r.nextInt(range)-1;
                     if(tmp < 0 ) {
                         if(!allowMultiple && occurred[tmp+1] > 0) {
