@@ -154,6 +154,9 @@ public class Database extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_SAVE + " ORDER BY " + SCORE_COLUMN_ID + " ASC";
         Cursor cu = db.rawQuery(query, null);
+        if(cu.getCount() == 0){
+            return null;
+        }
         cu.moveToFirst();
         turns = new Code[cu.getCount()-1];
         for (int i = 0; i < cu.getCount() && i<maxTurns; i++) {

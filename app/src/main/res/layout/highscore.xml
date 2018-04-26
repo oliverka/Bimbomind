@@ -101,6 +101,7 @@
             android:text="@string/reset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingVertical="@dimen/paddingVertical"
             android:id="@+id/highscore_reset"
             android:layout_gravity="bottom"
             android:layout_weight="1" />
@@ -116,6 +117,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/highscore_back"
             android:layout_gravity="bottom"
+            android:paddingVertical="@dimen/paddingVertical"
             android:layout_weight="1" />
 
         <Space
