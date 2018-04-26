@@ -24,7 +24,7 @@ public class Pin {
     }
 
     public boolean isEmpty() {
-        if(r == -1 && g == -1 && b == -1) {
+        if(getID() == -1) {
             return true;
         }
         else return false;

@@ -299,7 +299,7 @@ public class Game extends Activity {
                     double1 = -1;
                 }
                 for (int i = 0; i < backgrounds.length; i ++) {
-                    if (code[i].getID() == -1) {
+                    if (code[i].getID() != -1) {
                         code_drawable[i] = backgrounds[code[i].getID()];
                     }
                     else {

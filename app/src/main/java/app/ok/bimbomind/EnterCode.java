@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -65,14 +64,14 @@ public class EnterCode extends Activity {
             @Override
             public void onClick(View v) {
                 updateCode();
-                if(isValid()){
+                if(isValid()==""){
                     database.saveGame(generateSavegame());
                     Intent intent = new Intent(EnterCode.this, Game.class);
                     startActivity(intent);
                     finish();
                 }
                 else{
-                    errorText.setText("Please enter a valid Code.");
+                    errorText.setText(isValid()+"Please enter a valid Code.");
                     errorText.setTextColor(Color.RED);
                 }
             }
@@ -184,12 +183,15 @@ public class EnterCode extends Activity {
         code = new Code(Colors);
     }
 
-    public boolean isValid(){
-        if(code.containsEmpty() && !database.getPreferenceBoolean(database.PREFERENCE_SAVEGAME_ALLOWEMPTY)
-                || code.containsMultiple() && !database.getPreferenceBoolean(database.PREFERENCE_SAVEGAME_ALLOWMULTIPLE)){
-            return false;
+    public String isValid(){
+        String result = "";
+        if(!database.getPreferenceBoolean(database.PREFERENCE_SAVEGAME_ALLOWEMPTY)){
+            if(code.containsEmpty()) result += "Empty Holes are not allowed.\n";
         }
-        return true;
+        if(!database.getPreferenceBoolean(database.PREFERENCE_SAVEGAME_ALLOWMULTIPLE)) {
+            if(code.containsMultiple()) result += "Multiples are not allowed.\n";
+        }
+        return result;
     }
 
 

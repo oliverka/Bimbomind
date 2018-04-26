@@ -47,7 +47,7 @@ public class NewGame extends Activity {
             public void onClick(View v) {
                 if (saveStats()) {
                     Intent intent;
-                    if(set_guess.isChecked()){
+                    if(!set_guess.isChecked()){
                         //public Code(int numberOfHoles, int numberOfPins, boolean allowEmpty, boolean allowMultiple)
                         int sg_holes = database.getPreference(Database.PREFERENCE_SAVEGAME_HOLES);
                         int sg_pins = database.getPreference(Database.PREFERENCE_SAVEGAME_COLORCOUNT);
@@ -118,7 +118,7 @@ public class NewGame extends Activity {
                 database.setPreference(Database.PREFERENCE_SAVEGAME_MAXTURNS, Integer.parseInt(String.valueOf(turns.getText())));
                 database.setPreference(Database.PREFERENCE_SAVEGAME_COLORCOUNT, Integer.parseInt(String.valueOf(colors.getText())));
                 database.setPreference(Database.PREFERENCE_SAVEGAME_HOLES, Integer.parseInt(String.valueOf(holes.getText())));
-                database.setPreference(Database.PREFERENCE_SAVEGAME_SET, set_guess.isChecked());
+                database.setPreference(Database.PREFERENCE_SAVEGAME_SET, !set_guess.isChecked());
                 return true;
             }
         }catch (NumberFormatException e) {
