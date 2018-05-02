@@ -87,7 +87,7 @@ public class EnterCode extends Activity {
             field_code_pins[i].setOnDragListener(new MyDragListener(i));
         }
         setFieldGame(CodeLength);
-        setFieldColorPicker(CodeLength);
+        setFieldColorPicker(ColorCount);
     }
 
     //    public SaveGame(Code[] turnsMade, Code c, int maxTurns, int colorCount, int holes, boolean allowEmpty, boolean allowMultiple){

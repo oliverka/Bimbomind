@@ -47,22 +47,33 @@ public class NewGame extends Activity {
             public void onClick(View v) {
                 if (saveStats()) {
                     Intent intent;
-                    if(!set_guess.isChecked()){
-                        //public Code(int numberOfHoles, int numberOfPins, boolean allowEmpty, boolean allowMultiple)
-                        int sg_holes = database.getPreference(Database.PREFERENCE_SAVEGAME_HOLES);
-                        int sg_pins = database.getPreference(Database.PREFERENCE_SAVEGAME_COLORCOUNT);
-                        boolean sg_ae = database.getPreferenceBoolean(Database.PREFERENCE_SAVEGAME_ALLOWEMPTY);
-                        boolean sg_am = database.getPreferenceBoolean(Database.PREFERENCE_SAVEGAME_ALLOWMULTIPLE);
-                        int sg_turns = database.getPreference(Database.PREFERENCE_SAVEGAME_MAXTURNS);
-                        Code c = new Code(sg_holes, sg_pins, sg_ae, sg_am);
-                        database.saveGame(new SaveGame(new Code[0], c, sg_turns, sg_pins, sg_holes, sg_ae, sg_am));
-                        intent = new Intent(NewGame.this, Game.class);
+                    int sg_holes = database.getPreference(Database.PREFERENCE_SAVEGAME_HOLES);
+                    int sg_pins = database.getPreference(Database.PREFERENCE_SAVEGAME_COLORCOUNT);
+                    boolean sg_ae = database.getPreferenceBoolean(Database.PREFERENCE_SAVEGAME_ALLOWEMPTY);
+                    boolean sg_am = database.getPreferenceBoolean(Database.PREFERENCE_SAVEGAME_ALLOWMULTIPLE);
+                    int sg_turns = database.getPreference(Database.PREFERENCE_SAVEGAME_MAXTURNS);
+                    Code c = new Code(sg_holes, sg_pins, sg_ae, sg_am);
+
+                    if(!c.isPossible(sg_holes, sg_pins, sg_am, sg_ae)){
+                        intent = null;
+                        error_text.setText("No Code is possible with these Settings.");
+                        error_text.setTextColor(Color.RED);
                     }
                     else{
-                        intent = new Intent(NewGame.this, EnterCode.class);
+                        database.saveGame(new SaveGame(new Code[0], c, sg_turns, sg_pins, sg_holes, sg_ae, sg_am));
+                        if(!set_guess.isChecked()){
+                            //public Code(int numberOfHoles, int numberOfPins, boolean allowEmpty, boolean allowMultiple)
+                            intent = new Intent(NewGame.this, Game.class);
+                        }
+                        else{
+                            intent = new Intent(NewGame.this, EnterCode.class);
+                        }
                     }
-                    startActivity(intent);
-                    finish();
+
+                    if(intent != null){
+                        startActivity(intent);
+                        finish();
+                    }
                 }
             }
         });

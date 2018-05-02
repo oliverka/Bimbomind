@@ -75,6 +75,8 @@ public class Game extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent(Game.this, MainMenu.class);
                 startActivity(intent);
+                SaveGame saveGame1 = new SaveGame(saveTurns(),saveGame.getCode(), saveGame.getMaxTurns(), saveGame.getColorCount(), saveGame.getHoles(), saveGame.allowEmpty(), saveGame.allowMultiple());
+                database.saveGame(saveGame1);
                 finish();
             }
         });
@@ -89,6 +91,7 @@ public class Game extends Activity {
                         backgrounds1[i] = field_code_pins[i].getBackground();
                         backgrounds_firstrow[round][i] = backgrounds1[i];
                         firstrow[round][i].setBackground(backgrounds1[i]);
+                        System.err.println("Length Backgrounds:"+backgrounds1.length+" CodeDrawable: "+code_drawable.length);
                         if (code_drawable[i] == backgrounds1[i]) {
                             rightPlace++;
                             result[round][k].setBackgroundColor(Color.RED);
@@ -263,7 +266,7 @@ public class Game extends Activity {
                     color_picker.addView(field_color_picker[i]);
                 }
                 backgrounds = new Drawable[field_code];
-                code_drawable = new Drawable[field_code];
+                code_drawable = new Drawable[database.getPreference(Database.PREFERENCE_SAVEGAME_HOLES)];
                 int double1 = -1;
                 for (int i = 0; i < field_code; i++) {
                     for (int j = 0; j < i; j++) {
@@ -309,7 +312,7 @@ public class Game extends Activity {
                     }
                 }
                 for (int i = 0; i < round; i ++) {
-                    for (int j = 0; j < field_code; j++) {
+                    for (int j = 0; j < database.getPreference(Database.PREFERENCE_SAVEGAME_HOLES); j++) {
                         if (firstrow_code[i] != null && firstrow_code[i].getCode()[j].getID() != -1)
                             backgrounds_firstrow[i][j] = backgrounds[firstrow_code[i].getCode()[j].getID() - 1];
                         else
@@ -364,7 +367,6 @@ public class Game extends Activity {
         startActivity(intent);
         SaveGame saveGame1 = new SaveGame(saveTurns(),saveGame.getCode(), saveGame.getMaxTurns(), saveGame.getColorCount(), saveGame.getHoles(), saveGame.allowEmpty(), saveGame.allowMultiple());
         database.saveGame(saveGame1);
-        SaveGame saveGame2 = database.loadGame();
         finish();
     }
     private Code[] saveTurns() {
