@@ -7,7 +7,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="15"
-        android:id="@+id/tutorial_text" />
+        android:id="@+id/tutorial_text"
+        android:text="@string/tutorialText"/>
     <Space
         android:layout_width="match_parent"
         android:layout_height="0dp"
