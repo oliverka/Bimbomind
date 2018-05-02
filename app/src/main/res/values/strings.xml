@@ -1,4 +1,5 @@
 <resources>
+    <string name="Version">\@Copyright Bimbomind, Alpha 0.3.2</string>
     <string name="app_name">BimboMind</string>
     <string name="background">Background</string>
     <string name="pin_settings">Pin Settings</string>
@@ -6,8 +7,8 @@
     <string name="_0_1x">0.1x</string>
     <string name="_2x">2x</string>
     <string name="tutorial">Tutorial</string>
-    <string name="tutorialText">Tutorial
-
+    <string name="tutorialText">Tutorial\n
+\n
 In diesem Tutorial erhalten Sie eine grundlegende Einführung in die Funktionen des Spiels „BimboMind“, welches unter anderem auch bekannt ist als „MasterMind“.\n
 \n
 Hauptmenü Settings:\n

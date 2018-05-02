@@ -3,16 +3,23 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="10">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="15"
         android:id="@+id/tutorial_text"
         android:text="@string/tutorialText"/>
+    </ScrollView>
     <Space
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight=".5"/>
+        android:layout_weight=".2"/>
 
     <LinearLayout
         android:orientation="horizontal"
