@@ -35,7 +35,7 @@ public class Code {
     }
 
     public boolean generateCode(int numberOfHoles, int numberOfPins, boolean allowEmpty, boolean allowMultiple) {
-        //Mehr Löcher angegeben als mit den gegebenen Parametern gefüllt werden können
+        //Längerer Code als mit den gegebenen Parametern gefüllt werden kann
         if(!isPossible(numberOfHoles, numberOfPins, allowMultiple, allowEmpty)){
             return false;
         }
@@ -51,7 +51,7 @@ public class Code {
             boolean success = false;
             //generiere so lange zufällig Pins, bis ein valider gefunden wurde.
             int iterations = 0;
-            while(!success && iterations < 1000) {
+            while(!success && iterations < 1000) { //Maximal 1000 Iterationen erlaubt -> verhindert endlosschleife (sollte sowieso nicht auftreten, aber mit geringer wahrscheinlichkeit möglich)
                 int tmp;
                 success = false;
                 if(allowEmpty) {
@@ -59,6 +59,7 @@ public class Code {
                     tmp = r.nextInt(range)-1;
                     if(tmp < 0 ) {
                         if(!allowMultiple && occurred[tmp+1] > 0) {
+                            //Tu nichts wenn mehrere nicht erlaubt sind und pin schon vorgekommen ist
                         }
                         else {
                             code[i] = new Pin(-1, -1, -1, -1);
@@ -68,6 +69,7 @@ public class Code {
                     }
                     else {
                         if(!allowMultiple && occurred[tmp+1] > 0) {
+                            //Tu nichts wenn mehrere nicht erlaubt sind und pin schon vorgekommen ist
                         }
                         else {
                             code[i] = db.getPin(tmp);
@@ -79,6 +81,7 @@ public class Code {
                 else {
                     tmp = r.nextInt(range);
                     if(!allowMultiple && occurred[tmp] > 0) {
+                        //Tu nichts wenn mehrere nicht erlaubt sind und pin schon vorgekommen ist
                     }
                     else {
                         code[i] = db.getPin(tmp);
@@ -90,33 +93,34 @@ public class Code {
             }
         }
 
+        //Überprüfe ob Code wirklich korrekt ist
         if(containsEmpty() || containsMultiple()) {
             return false;
         }
-
+        //Code konnte generiert werden
         return true;
     }
 
     public boolean isPossible(int numberOfHoles, int numberOfPins, boolean allowMultiple, boolean allowEmpty){
-        if(numberOfHoles > numberOfPins) {
-            if(allowMultiple) return true;
-            else if(allowEmpty && numberOfPins+1 < numberOfHoles) return false;
-            else if(!allowEmpty) return false;
+        if(numberOfHoles > numberOfPins) { //Code kann unmöglich sein wenn mehr löche als farben
+            if(allowMultiple) return true; //mehrere sind erlaubt, code ist auf jeden fall möglich
+            else if(allowEmpty && numberOfPins+1 < numberOfHoles) return false; // Code ist auch mit leerem Pin unmöglich
+            else if(!allowEmpty) return false; // mehrere sind nicht erlaubt, leere auch nicht -> unmöglich
         }
-        return true;
+        return true; //keiner der oberen fälle, code kann korrekt generiert werden
     }
 
     public Pin[] getCode(){
         return code;
     }
 
-    //gibt den code an der konsole aus
+    //gibt den code an der konsole aus, für debugging
     public void printCode() {
         System.err.print("Code: ");
         for(int i = 0; i<code.length; i++) {
             System.err.print(code[i].toString() + " ");
         }
-        System.err.println();
+        System.err.println(); //newline
     }
 
     //bestimmt, ob leere Stellen vorkommen
