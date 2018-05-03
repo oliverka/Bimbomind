@@ -36,7 +36,7 @@ public class Code {
 
     public boolean generateCode(int numberOfHoles, int numberOfPins, boolean allowEmpty, boolean allowMultiple) {
         //Mehr Löcher angegeben als mit den gegebenen Parametern gefüllt werden können
-        if(numberOfHoles > numberOfPins && !allowMultiple) {
+        if(!isPossible(numberOfHoles, numberOfPins, allowMultiple, allowEmpty)){
             return false;
         }
         Random r = new Random();
@@ -50,7 +50,8 @@ public class Code {
         for(int i = 0; i<numberOfHoles; i++) {
             boolean success = false;
             //generiere so lange zufällig Pins, bis ein valider gefunden wurde.
-            while(!success) {
+            int iterations = 0;
+            while(!success && iterations < 1000) {
                 int tmp;
                 success = false;
                 if(allowEmpty) {
@@ -85,6 +86,7 @@ public class Code {
                         success = true;
                     }
                 }
+                iterations ++;
             }
         }
 
@@ -92,6 +94,15 @@ public class Code {
             return false;
         }
 
+        return true;
+    }
+
+    public boolean isPossible(int numberOfHoles, int numberOfPins, boolean allowMultiple, boolean allowEmpty){
+        if(numberOfHoles > numberOfPins) {
+            if(allowMultiple) return true;
+            else if(allowEmpty && numberOfPins+1 < numberOfHoles) return false;
+            else if(!allowEmpty) return false;
+        }
         return true;
     }
 

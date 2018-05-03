@@ -33,7 +33,6 @@ public class SettingsBackground extends Activity {
 
     private Button back;
     private Button slider_color;
-    private Button choose_image;
     private Button save;
     private SeekBar slider_red;
     private SeekBar slider_green;
@@ -41,9 +40,6 @@ public class SettingsBackground extends Activity {
     private int[] rgbs;
     private Database database;
     private Context context;
-    private RadioButton single_color;
-    private RadioButton image;
-    private ImageView image_preview;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -55,8 +51,6 @@ public class SettingsBackground extends Activity {
         database = Database.getInstance();
         context = this;
         slider_color = (Button) findViewById(R.id.background_settings_slider_color);
-        choose_image = (Button) findViewById(R.id.background_settings_choose_image);
-        image_preview = (ImageView) findViewById(R.id.background_settings_image_preview);
         slider_red = (SeekBar) findViewById(R.id.background_settings_color_picker_red);
         slider_green = (SeekBar) findViewById(R.id.background_settings_color_picker_green);
         slider_blue = (SeekBar) findViewById(R.id.background_settings_color_picker_blue);
@@ -75,39 +69,8 @@ public class SettingsBackground extends Activity {
         slider_blue.getProgressDrawable().setColorFilter(0xFF0000FF, PorterDuff.Mode.MULTIPLY);
         slider_blue.getThumb().setColorFilter(0xFF0000FF, PorterDuff.Mode.MULTIPLY);
         back = (Button) findViewById(R.id.background_settings_back);
-        single_color = (RadioButton) findViewById(R.id.background_settings_single_color);
-        image = (RadioButton) findViewById(R.id.background_settings_image);
         save = (Button) findViewById(R.id.background_settings_save);
 
-        /*
-        protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-            super.onActivityResult(requestCode, resultCode, data);
-            if (requestCode == 0 && resultCode == RESULT_OK && data != null) {
-                Uri selectedImage = data.getData();
-                try {
-                    Bitmap bitmapImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                    database.setPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_IMAGEPATH, selectedImage.getPath());
-                    image_preview.setImageBitmap(bitmapImage);
-                    System.err.println("Path: " + selectedImage.getPath());
-                } catch (IOException e) {}
-            }
-        }
-        */
-
-        String pathName = database.getPreferenceString(Database.PREFERENCE_SETTINGS_BACKGROUND_IMAGEPATH);
-        if (pathName != null && !pathName.equals("")) {
-            File f = new File(pathName);
-            System.err.println("Pathname: " + pathName);
-            System.err.println(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + pathName);
-            if (f.exists()) {
-                Bitmap bitmap = BitmapFactory.decodeFile(pathName);
-                image_preview.setImageBitmap(bitmap);
-            }
-        }
-        if (database.getPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_USEIMAGE) == 0)
-            single_color.setChecked(true);
-        else if (database.getPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_USEIMAGE) == 1)
-            image.setChecked(true);
         rgbs[0] = database.getPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_COLOR_R);
         rgbs[1] = database.getPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_COLOR_G);
         rgbs[2] = database.getPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_COLOR_B);
@@ -244,48 +207,7 @@ public class SettingsBackground extends Activity {
                 slider_blue.setProgress(0);
             }
         });
-        choose_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*");
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                try {
-                    startActivityForResult(Intent.createChooser(intent, "Select a File to Upload"), 0);
-                } catch (ActivityNotFoundException ex) {
-                }
-            }
-        });
     }
-    public void background_settings_radio_group(View view) {
-        boolean checked = ((RadioButton) view).isChecked();
-        switch(view.getId()) {
-            case R.id.background_settings_single_color:
-                if (checked)
-                    image.setChecked(false);
-                    break;
-            case R.id.background_settings_image:
-                if (checked)
-                    single_color.setChecked(false);
-                    break;
-        }
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0 && resultCode == RESULT_OK && data != null) {
-            Uri selectedImage = data.getData();
-            try {
-                Bitmap bitmapImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                database.setPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_IMAGEPATH, selectedImage.getPath());
-                File image = new File(selectedImage.getPath());
-                        if(image.exists()) System.err.println("File Exists");
-                image_preview.setImageBitmap(bitmapImage);
-                System.err.println("Path: " + selectedImage.getPath());
-            } catch (IOException e) {}
-        }
-    }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -317,10 +239,5 @@ public class SettingsBackground extends Activity {
         database.setPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_COLOR_R, rgbs[0]);
         database.setPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_COLOR_G, rgbs[1]);
         database.setPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_COLOR_B, rgbs[2]);
-        int use_image = 0;
-        if (image.isChecked()) {
-            use_image = 1;
-        }
-        database.setPreference(Database.PREFERENCE_SETTINGS_BACKGROUND_USEIMAGE, use_image);
     }
 }

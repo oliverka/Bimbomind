@@ -1,4 +1,5 @@
 <resources>
+    <string name="Version">\@Copyright Bimbomind, Alpha 0.3.2</string>
     <string name="app_name">BimboMind</string>
     <string name="background">Background</string>
     <string name="pin_settings">Pin Settings</string>
@@ -6,6 +7,47 @@
     <string name="_0_1x">0.1x</string>
     <string name="_2x">2x</string>
     <string name="tutorial">Tutorial</string>
+    <string name="tutorialText">Tutorial\n
+\n
+In diesem Tutorial erhalten Sie eine grundlegende Einführung in die Funktionen des Spiels „BimboMind“, welches unter anderem auch bekannt ist als „MasterMind“.\n
+\n
+Hauptmenü Settings:\n
+Über das Hauptmenü gelangen Sie in „Settings“, welches insgesamt drei Untermenüpunkte anbietet und grundlegende Darstellungseinstellungen für das Spiel anbietet. Werden keine Einstellungen festgelegt werden Standardwerte gesetzt.\n
+\n
+Tutorial:\n
+Jederzeit abrufbares Tutorial, welches beim erstmaligen Starten der Applikation automatisch ausgeführt wird.\n
+\n
+Background:\n
+Hier haben Sie die Möglichkeit über „Single Color“  eine eintönige Farbe auf Basis von RGB auszuwählen oder über „Image“ ein Bild aus ihrem eigenen Repertoire.\n
+\n
+PIN Settings:\n
+Dieser Untermenüpunkt gibt Ihnen die Möglichkeit den Pins ein individuelles Design zu verschaffen.\n
+Über „Pin Shape“ wird die Form der jeweiligen Pins festgelegt.\n
+Über „Pin Colors“ die Farbe, welcher für jeden einzelnen Pin -je nach Anzahl der ausgewählten Pins- auf Basis von RGB festgelegt werden kann.\n
+\n
+Hauptmenü New Game:\n
+Nach optionaler Darstellungsfestlegung können Sie über „New Game“ ein neues Spiel starten.\n
+Bevor das Spiel startet müssen Sie jedoch noch grundlegende Spieleinstellungen festlegen.\n
+\n
+„Allow Empty“ lässt bei der zufälligen Farbcodegenerierung eines Farbcodes durch den Computer bzw. des Gegenspielers auch leere Stellen zu.\n
+„Mehrfachauswahl“ lässt gleiche Farben bei der zufälligen Farbcodegenerierung eines Farbcodes durch den Computer bzw. des Gegenspielers zu.\n
+\n
+„Versuche“ gibt die Anzahl der Spielzüge, bis der Farbcode erraten ist, an.\n
+„Farben“ wählt aus den zuvor optional definierten Farben, nach Reihenfolge, die Anzahl der zugelassenen Farben aus.\n
+„Löcher“ legt fest, wie viele Pins gesetzt werden müssen oder automatisch durch den Computer generiert werden.\n
+\n
+„AI“ steuert den zu generierenden Farbcode automatisch über den Computer.\n
+„SET“ lässt zu, dass ein Gegenspieler den Farbcode setzen kann.\n
+\n
+„START GAME“ startet das Spiel mit den zuvor festgelegten Werten bzw. bei leer lassen eines Feldes, mit vordefinierten Standardwerten.\n
+\n
+Hauptmenü Load Game:\n
+Ladet ein zuvor beendetes Spiel erneut.\n
+        \n
+\n
+Hauptmenü Highscore:\n
+Zeigt dem Spieler die 10 besten Spieleergebnisse aus der Vergangenheit an.\n
+„Reset“ setzt den Highscore zurück und löscht sämtliche Spieleergebnisse.\n</string>
     <string name="new_game">New Game</string>
     <string name="load_game">Load Game</string>
     <string name="highscore">Highscore</string>

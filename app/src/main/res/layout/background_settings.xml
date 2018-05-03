@@ -10,13 +10,11 @@
         android:layout_height="0dp"
         android:layout_weight=".5"/>
 
-    <RadioButton
-        android:text="@string/single_color"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:id="@+id/background_settings_single_color"
-        android:onClick="background_settings_radio_group"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Background Color"
+        android:layout_marginLeft="10dp"/>
 
     <Space
         android:layout_width="match_parent"
@@ -202,33 +200,6 @@
             android:layout_height="wrap_content"
             android:layout_weight=".5" />
     </LinearLayout>
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight=".5"/>
-
-    <RadioButton
-        android:text="@string/image"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:id="@+id/background_settings_image"
-        android:onClick="background_settings_radio_group" />
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight=".5"/>
-
-    <Button
-        android:text="Choose Image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/marginLeft"
-        android:layout_marginRight="@dimen/marginRight"
-        android:background="@drawable/button_design"
-        android:id="@+id/background_settings_choose_image" />
 
     <Space
         android:layout_width="match_parent"

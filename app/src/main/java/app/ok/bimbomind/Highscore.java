@@ -65,6 +65,9 @@ public class Highscore extends Activity {
             @Override
             public void onClick(View v) {
                 reset_highscore();
+                Intent intent = new Intent(Highscore.this, Highscore.class);
+                startActivity(intent);
+                finish();
             }
         });
         choice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

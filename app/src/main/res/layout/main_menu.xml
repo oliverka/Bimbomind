@@ -70,8 +70,7 @@
             android:layout_marginLeft="@dimen/marginLeft"
             android:layout_weight="6"
             android:layout_gravity="bottom"
-            android:text="\@Copyright Bimbomind, Version 2" />
-
+            android:text="@string/Version"/>
         <Space
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
