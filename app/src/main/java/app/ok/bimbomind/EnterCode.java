@@ -128,7 +128,13 @@ public class EnterCode extends Activity {
                 }
                 backgrounds = new Drawable[CodeLength];
                 int double1 = -1;
-                for (int i = 0; i < CodeLength; i++) {
+                int length;
+                if (backgrounds.length > CodeLength) {
+                    length = CodeLength;
+                }
+                else
+                    length = backgrounds.length;
+                for (int i = 0; i < length; i++) { //CodeLength
                     for (int j = 0; j < i; j++) {
                         if (rgbs[i][0] == rgbs[j][0] && rgbs[i][1] == rgbs[j][1] && rgbs[i][2] == rgbs[j][2] && i != j)
                             double1 = j;
