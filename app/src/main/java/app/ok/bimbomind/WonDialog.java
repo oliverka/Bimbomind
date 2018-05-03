@@ -86,7 +86,11 @@ public class WonDialog extends Dialog implements android.view.View.OnClickListen
                         .show();
                 break;
             case R.id.won_dialog_go_to_menu:
+                database.resetDatabase("Savegame");
                 dismiss();
+                Intent intent = new Intent(c, MainMenu.class);
+                c.startActivity(intent);
+                c.finish();
                 break;
             default:
                 break;

@@ -19,6 +19,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by o.k on 15.03.2018.
@@ -54,14 +55,21 @@ public class Game extends Activity {
         setContentView(R.layout.game_field);
         database = Database.getInstance();
         saveGame = database.loadGame();
+        if (saveGame == null) {
+            Toast.makeText(this,"There is no open game!", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(Game.this, MainMenu.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
         code = saveGame.getCode().getCode();
         firstrow_code = saveGame.getTurns();
         round = saveGame.getTurns().length;
+        shape = database.getPreference(Database.PREFERENCE_PINS_SHAPE);
+        rgbs = database.getColorSettings();
         final int field_code = saveGame.getColorCount();
         final int rounds = saveGame.getMaxTurns();
         final int holes = saveGame.getHoles();
-        shape = database.getPreference(Database.PREFERENCE_PINS_SHAPE);
-        rgbs = database.getColorSettings();
 
         context = this;
         Button back = (Button) findViewById(R.id.game_field_back);
@@ -139,6 +147,26 @@ public class Game extends Activity {
                                 .show();
                     }
                     rightPlace = 0;
+                    for (int i = 0; i < field_code_pins.length; i++) {
+                        Drawable mDrawable;
+                        switch (shape) {
+                            case 0:
+                                mDrawable = context.getResources().getDrawable(R.drawable.triangle);
+                                break;
+                            case 1:
+                                mDrawable = context.getResources().getDrawable(R.drawable.circle);
+                                break;
+                            case 2:
+                                mDrawable = context.getResources().getDrawable(R.drawable.rhombus);
+                                break;
+                            default:
+                                mDrawable = context.getResources().getDrawable(R.drawable.square);
+                                break;
+                        }
+                        String hex = String.format("#%02x%02x%02x", 255, 255, 255);
+                        mDrawable.setColorFilter(Color.parseColor(hex), PorterDuff.Mode.MULTIPLY);
+                        field_code_pins[i].setBackground(mDrawable);
+                    }
                 }
             }
         });
@@ -300,26 +328,35 @@ public class Game extends Activity {
                     }
                     double1 = -1;
                 }
-                for (int i = 0; i < backgrounds.length; i ++) {
-                    if (code[i].getID() != -1) {
-                        code_drawable[i] = backgrounds[code[i].getID()];
+                try {
+                    for (int i = 0; i < backgrounds.length; i++) {
+                        if (code[i].getID() != -1) {
+                            code_drawable[i] = backgrounds[code[i].getID()];
+                        } else {
+                            String hex = String.format("#%02x%02x%02x", rgbs[0][0], rgbs[0][1], rgbs[0][2]);
+                            backgrounds[0].setColorFilter(Color.parseColor(hex) , PorterDuff.Mode.MULTIPLY);
+                            code_drawable[i] = backgrounds[0];
+                        }
                     }
-                    else {
-                        int alpha = backgrounds[0].getAlpha();
-                        backgrounds[0].setAlpha(100);
-                        code_drawable[i] = backgrounds[0];
-                        backgrounds[0].setAlpha(alpha);
-                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    Toast.makeText(context,"Can not open game", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(Game.this, MainMenu.class);
+                    startActivity(intent);
+                    finish();
                 }
                 for (int i = 0; i < round; i ++) {
                     for (int j = 0; j < database.getPreference(Database.PREFERENCE_SAVEGAME_HOLES); j++) {
                         if (firstrow_code[i] != null && firstrow_code[i].getCode()[j].getID() != -1)
                             backgrounds_firstrow[i][j] = backgrounds[firstrow_code[i].getCode()[j].getID() - 1];
-                        else
-                            backgrounds_firstrow[i][j] = backgrounds[0];
+                        else {
+                            Drawable mDrawable = backgrounds[0];
+                            String hex = String.format("#%02x%02x%02x", 255, 255, 255);
+                            mDrawable.setColorFilter(Color.parseColor(hex), PorterDuff.Mode.MULTIPLY);
+                            backgrounds_firstrow[i][j] = mDrawable;
+                        }
                         switch (shape) {
                             case 0:
-                                //firstrow[i][j].setBackgroundResource(R.drawable.triangle);
+                                firstrow[i][j].setBackgroundResource(R.drawable.triangle);
                                 firstrow[i][j].setBackground(backgrounds_firstrow[i][j]);
                                 break;
                             case 1:
@@ -415,9 +452,6 @@ public class Game extends Activity {
 
         @Override
         public boolean onDrag(View v, DragEvent event) {
-            if (field_code_pins[0] == v) {
-
-            }
             switch (event.getAction()) {
                 case DragEvent.ACTION_DRAG_STARTED:
                     break;
