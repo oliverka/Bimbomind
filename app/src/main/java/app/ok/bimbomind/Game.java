@@ -329,7 +329,13 @@ public class Game extends Activity {
                     double1 = -1;
                 }
                 try {
-                    for (int i = 0; i < backgrounds.length; i++) {
+                    int length;
+                    if (backgrounds.length > code_drawable.length) {
+                        length = code_drawable.length;
+                    }
+                    else
+                        length = backgrounds.length;
+                    for (int i = 0; i < length; i++) {
                         if (code[i].getID() != -1) {
                             code_drawable[i] = backgrounds[code[i].getID()];
                         } else {
