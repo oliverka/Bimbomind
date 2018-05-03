@@ -119,8 +119,13 @@ public class EnterCode extends Activity {
             @Override
             public void onGlobalLayout() {
                 color_picker.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                double field_width = (layout.getWidth() / (CodeLength * 2 - 1));
-                for (int i = 0; i < CodeLength; i ++) {
+                double field_width = (layout.getWidth() / (CodeLength * 2 - 1));int length;
+                if (backgrounds.length > CodeLength) {
+                    length = CodeLength;
+                }
+                else
+                    length = backgrounds.length;
+                for (int i = 0; i < length; i ++) {
                     field_color_picker[i].setX((float) (field_width * i));
                     field_color_picker[i].setMinimumWidth((int) field_width);
                     field_color_picker[i].setMinimumHeight((int) (layout.getHeight() * 0.66));
@@ -128,12 +133,7 @@ public class EnterCode extends Activity {
                 }
                 backgrounds = new Drawable[CodeLength];
                 int double1 = -1;
-                int length;
-                if (backgrounds.length > CodeLength) {
-                    length = CodeLength;
-                }
-                else
-                    length = backgrounds.length;
+
                 for (int i = 0; i < length; i++) { //CodeLength
                     for (int j = 0; j < i; j++) {
                         if (rgbs[i][0] == rgbs[j][0] && rgbs[i][1] == rgbs[j][1] && rgbs[i][2] == rgbs[j][2] && i != j)
